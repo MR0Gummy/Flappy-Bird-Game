@@ -1,3 +1,8 @@
+// Define global variables
+let scoreboard;
+let scoreDisplay;
+let animationId;
+
 //board
 let board;
 let boardWidth = 360;
@@ -43,6 +48,37 @@ let lastTime = performance.now();
 let gameOver = false;
 let score = 0;
 
+// Function to initialize scoreboard
+function initScoreboard() {
+    scoreboard = document.getElementById("scoreboard");
+    scoreDisplay = document.getElementById("score");
+}
+
+// Function to update score
+function updateScore() {
+    scoreDisplay.textContent = score;
+}
+
+// Function to show scoreboard
+function showScoreboard() {
+    scoreboard.style.display = "block";
+}
+
+// Function to hide scoreboard
+function hideScoreboard() {
+    scoreboard.style.display = "none";
+}
+
+// Function to pause the game
+function pauseGame() {
+    cancelAnimationFrame(animationId);
+}
+
+// Function to resume the game
+function resumeGame() {
+    animationId = requestAnimationFrame(mainLoop);
+}
+
 // Function to adjust game parameters based on screen size
 function adjustGameForScreenSize() {
     const screenWidth = window.innerWidth;
@@ -67,24 +103,26 @@ window.addEventListener('resize', adjustGameForScreenSize);
 
 // Main game loop
 function mainLoop(currentTime) {
-    // Calculate elapsed time since last frame
-    let deltaTime = currentTime - lastTime;
-    lastTime = currentTime;
+    if (document.getElementById("menu").style.display === "none") {
+        // Calculate elapsed time since last frame
+        let deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
 
-    // Accumulate elapsed time
-    accumulatedTime += deltaTime;
+        // Accumulate elapsed time
+        accumulatedTime += deltaTime;
 
-    // Update game logic in fixed time steps
-    while (accumulatedTime >= MS_PER_UPDATE) {
-        update();
-        accumulatedTime -= MS_PER_UPDATE;
+        // Update game logic in fixed time steps
+        while (accumulatedTime >= MS_PER_UPDATE) {
+            update();
+            accumulatedTime -= MS_PER_UPDATE;
+        }
+
+        // Render the game
+        render();
+
+        // Request the next frame
+        animationId = requestAnimationFrame(mainLoop);
     }
-
-    // Render the game
-    render();
-
-    // Request the next frame
-    requestAnimationFrame(mainLoop);
 }
 
 // Function to start the game
@@ -96,8 +134,8 @@ function startGame() {
     if (menu && gameScreen) {
         menu.style.display = "none";
         gameScreen.style.display = "block";
-        // Start the game logic
-        requestAnimationFrame(mainLoop);
+        showScoreboard(); // Show the scoreboard
+        pauseGame(); // Pause the game initially
     } else {
         console.error("Menu or game-screen element not found!");
     }
@@ -132,19 +170,13 @@ document.addEventListener('DOMContentLoaded', function() {
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
-
-    // Load bird image
-    birdImg = new Image();
-    birdImg.src = "./flappybird.png";
-    birdImg.onload = function() {
-        // Start rendering the game after the bird image is loaded
-        requestAnimationFrame(mainLoop);
-    };
+    initScoreboard(); // Initialize scoreboard
 
     // Handle form submission to start the game
     document.getElementById("start-form").addEventListener("submit", function(event) {
         event.preventDefault(); // Prevent form submission
         startGame();
+        resumeGame(); // Resume the game when started
     });
 });
 
@@ -180,6 +212,9 @@ function update() {
     while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
         pipeArray.shift(); //removes first element from the array
     }
+
+    // Update the score
+    updateScore();
 }
 
 function render() {
