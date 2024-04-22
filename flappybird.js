@@ -242,6 +242,20 @@ function moveBird(e) {
     }
 }
 
+// Function to reset the game
+function resetGame() {
+    // Reset all game variables to their initial state
+    accumulatedTime = 0;
+    lastTime = performance.now();
+    gameStarted = false;
+    lastFrameTime = undefined;
+    bird.y = boardHeight / 2;
+    velocityY = 0;
+    pipeArray = [];
+    gameOver = false;
+    score = 0;
+}
+
 function detectCollision(a, b) {
     return a.x < b.x + b.width && //a's top left corner doesn't reach b's top right corner
         a.x + a.width > b.x && //a's top right corner passes b's top left corner
