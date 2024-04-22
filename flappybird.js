@@ -153,6 +153,9 @@ function update() {
     }
     context.clearRect(0, 0, board.width, board.height);
 
+    // Log bird position
+    console.log('Bird Position:', bird.x, bird.y);
+
     //bird
     let currentTime = Date.now();
     let deltaTime = (currentTime - lastFrameTime) / 1000 || 0; // Calculate deltaTime
@@ -175,6 +178,9 @@ function update() {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+
+        // Log pipe position
+        console.log('Pipe Position:', pipe.x, pipe.y);
 
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5; //0.5 because there are 2 pipes! so 0.5*2 = 1, 1 for each set of pipes
