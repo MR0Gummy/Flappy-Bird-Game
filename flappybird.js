@@ -8,21 +8,29 @@ let lastTime = performance.now();
 // Define a variable to track whether the game has started
 let gameStarted = false;
 
+// Variable to keep track of the last frame time
+let lastFrameTime;
+
 // Main game loop
 function mainLoop(currentTime) {
     // Calculate elapsed time since last frame
     let deltaTime = currentTime - lastTime;
     lastTime = currentTime;
-    
+
+    // Initialize lastFrameTime if it's not defined
+    if (!lastFrameTime) {
+        lastFrameTime = currentTime;
+    }
+
     // Accumulate elapsed time
     accumulatedTime += deltaTime;
-    
+
     // Update game logic in fixed time steps
     while (accumulatedTime >= MS_PER_UPDATE) {
         update();
         accumulatedTime -= MS_PER_UPDATE;
     }
-    
+
     // Request the next frame
     requestAnimationFrame(mainLoop);
 }
