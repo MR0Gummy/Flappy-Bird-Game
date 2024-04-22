@@ -4,7 +4,7 @@ const MS_PER_UPDATE = 16; // 60 FPS
 // Variable to keep track of accumulated time
 let accumulatedTime = 0;
 let lastTime = performance.now();
-
+let lastFrameTime = Date.now(); // Initialize lastFrameTime here
 
 // Define a variable to track whether the game has started
 let gameStarted = false;
@@ -23,6 +23,9 @@ function mainLoop(currentTime) {
         update();
         accumulatedTime -= MS_PER_UPDATE;
     }
+    
+    // Render the game
+    render();
     
     // Request the next frame
     requestAnimationFrame(mainLoop);
@@ -111,10 +114,6 @@ window.onload = function () {
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
 
-    //draw flappy bird
-    // context.fillStyle = "green";
-    // context.fillRect(bird.x, bird.y, bird.width, bird.height);
-
     //load images
     birdImg = new Image();
     birdImg.src = "./flappybird.png";
@@ -132,7 +131,7 @@ window.onload = function () {
     document.addEventListener("keydown", moveBird);
     document.addEventListener("touchstart", moveBird); // Add touch event listener
 }
-let lastFrameTime = Date.now(); // Define lastFrameTime here
+
 function update() {
     if (gameOver) {
         return;
@@ -142,7 +141,6 @@ function update() {
     //bird
     let currentTime = Date.now();
     let deltaTime = (currentTime - lastFrameTime) / 1000 || 0; // Calculate deltaTime
-    
     lastFrameTime = currentTime;
 
     velocityY += gravity * deltaTime; // Apply gravity with deltaTime
