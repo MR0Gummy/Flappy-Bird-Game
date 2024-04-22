@@ -1,3 +1,35 @@
+// Define constants
+const MS_PER_UPDATE = 16; // 60 FPS
+
+// Variable to keep track of accumulated time
+let accumulatedTime = 0;
+let lastTime = performance.now();
+
+// Main game loop
+function mainLoop(currentTime) {
+    // Calculate elapsed time since last frame
+    let deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    
+    // Accumulate elapsed time
+    accumulatedTime += deltaTime;
+    
+    // Update game logic in fixed time steps
+    while (accumulatedTime >= MS_PER_UPDATE) {
+        update();
+        accumulatedTime -= MS_PER_UPDATE;
+    }
+    
+    // Render the game
+    render();
+    
+    // Request the next frame
+    requestAnimationFrame(mainLoop);
+}
+
+// Start the game loop
+requestAnimationFrame(mainLoop);
+
 //board
 let board;
 let boardWidth = 360;
@@ -76,14 +108,12 @@ window.onload = function () {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
-    requestAnimationFrame(update);
     setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
     document.addEventListener("touchstart", moveBird); // Add touch event listener
 }
 
 function update() {
-    requestAnimationFrame(update);
     if (gameOver) {
         return;
     }
