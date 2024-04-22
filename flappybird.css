@@ -1,35 +1,10 @@
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    background-color: black;
+}
+#board {
+    /* background-color: skyblue; */
     background-image: url("./flappybirdbg.png");
-    background-size: cover; /* Ensures the background image covers the entire body */
-}
-
-#menu {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1; /* Ensures the menu is above the canvas */
-    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
-    padding: 20px;
-    border-radius: 10px;
-}
-
-#game-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%; /* Ensure the container doesn't exceed the width of the viewport */
-    max-height: 100%; /* Ensure the container doesn't exceed the height of the viewport */
-    overflow: hidden; /* Hide any content that overflows the container */
-}
-
-canvas {
-    display: block;
-    margin: 0 auto; /* Center the canvas horizontally */
-    max-width: 100%; /* Ensure the canvas doesn't exceed the width of its container */
-    max-height: 100%; /* Ensure the canvas doesn't exceed the height of its container */
+    background-size: cover; /* Ensures the background image covers the entire canvas */
 }

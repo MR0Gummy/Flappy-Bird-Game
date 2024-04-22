@@ -1,47 +1,3 @@
-const express = require('express');
-const app = express();
-const fs = require('fs');
-
-app.use(express.json());
-
-const SCORES_FILE_PATH = 'scores.txt';
-
-// Route to save score
-app.post('/scores', (req, res) => {
-    const { playerName, score } = req.body;
-    const newScore = `${playerName}: ${score}\n`;
-    fs.appendFile(SCORES_FILE_PATH, newScore, (err) => {
-        if (err) {
-            console.error('Error saving score:', err);
-            res.status(500).send('Error saving score');
-        } else {
-            console.log('Score saved successfully');
-            res.status(201).send('Score saved successfully');
-        }
-    });
-});
-
-// Route to get all scores
-app.get('/scores', (req, res) => {
-    fs.readFile(SCORES_FILE_PATH, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading scores:', err);
-            res.status(500).send('Error reading scores');
-        } else {
-            const scores = data.split('\n').filter(Boolean);
-            res.json(scores);
-        }
-    });
-});
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Server listening on port ${port}`));
-
-// Define global variables
-let scoreboard;
-let scoreDisplay;
-let animationId;
-
 //board
 let board;
 let boardWidth = 360;
@@ -51,15 +7,15 @@ let context;
 //bird
 let birdWidth = 34; //width/height ratio = 408/228 = 17/12
 let birdHeight = 24;
-let birdX = boardWidth / 8;
-let birdY = boardHeight / 2;
+let birdX = boardWidth/8;
+let birdY = boardHeight/2;
 let birdImg;
 
 let bird = {
-    x: birdX,
-    y: birdY,
-    width: birdWidth,
-    height: birdHeight
+    x : birdX,
+    y : birdY,
+    width : birdWidth,
+    height : birdHeight
 }
 
 //pipes
@@ -75,211 +31,62 @@ let bottomPipeImg;
 //physics
 let velocityX = -2; //pipes moving left speed
 let velocityY = 0; //bird jump speed
-let gravity = 0.4; // Adjusted gravity for phones
-
-// Define constants
-const MS_PER_UPDATE = 16; // 60 FPS
-
-// Variable to keep track of accumulated time
-let accumulatedTime = 0;
-let lastTime = performance.now();
+let gravity = 0.4;
 
 let gameOver = false;
 let score = 0;
 
-let playerName;
-
-// Function to initialize scoreboard
-function initScoreboard() {
-    scoreboard = document.getElementById("scoreboard");
-    scoreDisplay = document.getElementById("score");
-}
-
-// Function to update score
-function updateScore() {
-    scoreDisplay.textContent = score;
-}
-
-// Function to show scoreboard
-function showScoreboard() {
-    scoreboard.style.display = "block";
-}
-
-// Function to hide scoreboard
-function hideScoreboard() {
-    scoreboard.style.display = "none";
-}
-
-// Function to pause the game
-function pauseGame() {
-    cancelAnimationFrame(animationId);
-}
-
-// Function to resume the game
-function resumeGame() {
-    animationId = requestAnimationFrame(mainLoop);
-}
-
-// Function to save the score to file
-function saveScoreToFile(playerName, score) {
-    const newScore = `${playerName}: ${score}\n`;
-    fs.appendFile(SCORES_FILE_PATH, newScore, (err) => {
-        if (err) {
-            console.error('Error saving score to file:', err);
-        } else {
-            console.log('Score saved to file successfully');
-        }
-    });
-}
-
-// Function to adjust game parameters based on screen size
-function adjustGameForScreenSize() {
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-
-    if (screenWidth < 600) { // Small screens (e.g., phones)
-        gravity = 0.3; // Adjusted gravity for smaller screens
-        velocityY = -4; // Adjusted velocity for smaller screens
-        // Adjust other parameters as needed for smaller screens
-    } else { // Larger screens (e.g., computers)
-        gravity = 0.4; // Default gravity for larger screens
-        velocityY = -6; // Default velocity for larger screens
-        // Adjust other parameters as needed for larger screens
-    }
-}
-
-// Call the function initially
-adjustGameForScreenSize();
-
-// Call the function whenever the window is resized
-window.addEventListener('resize', adjustGameForScreenSize);
-
-// Main game loop
-function mainLoop(currentTime) {
-    if (!gameOver) {
-        // Calculate elapsed time since last frame
-        let deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        // Accumulate elapsed time
-        accumulatedTime += deltaTime;
-
-        // Update game logic in fixed time steps
-        while (accumulatedTime >= MS_PER_UPDATE) {
-            update();
-            accumulatedTime -= MS_PER_UPDATE;
-        }
-
-        // Render the game
-        render();
-
-        // Request the next frame
-        animationId = requestAnimationFrame(mainLoop);
-    }
-}
-
-// Function to start the game
-function startGame() {
-    playerName = document.getElementById("player-name").value;
-    if (playerName.trim() === "") {
-        alert("Please enter your name.");
-        return;
-    }
-
-    // Hide the menu and display the game canvas
-    const menu = document.getElementById("menu");
-    const gameScreen = document.getElementById("game-container");
-
-    if (menu && gameScreen) {
-        menu.style.display = "none";
-        gameScreen.style.display = "block";
-        showScoreboard(); // Show the scoreboard
-        pauseGame(); // Pause the game initially
-        resetGame(); // Reset the game
-    } else {
-        console.error("Menu or game-screen element not found!");
-    }
-}
-
-// Function to reset the game state
-function resetGame() {
-    bird.y = birdY;
-    pipeArray = [];
-    score = 0;
-    gameOver = false;
-}
-
-// Function to handle touch input for bird jumping
-function moveBirdTouch(e) {
-    e.preventDefault(); // Prevent default touch behavior (like scrolling)
-    jump();
-}
-
-// Function to handle bird jumping
-function jump() {
-    if (!gameOver) {
-        velocityY = -6; // Adjusted jump velocity for touch input
-    } else {
-        startGame(); // Restart the game if the player taps after game over
-        resumeGame(); // Resume the game
-    }
-}
-
-// Start the game when the page is loaded
-document.addEventListener('DOMContentLoaded', function() {
+window.onload = function() {
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
-    initScoreboard(); // Initialize scoreboard
 
-    // Handle form submission to start the game
-    document.getElementById("start-form").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent form submission
-        startGame();
-        resumeGame(); // Resume the game when started
-    });
-});
+    //draw flappy bird
+    // context.fillStyle = "green";
+    // context.fillRect(bird.x, bird.y, bird.width, bird.height);
+
+    //load images
+    birdImg = new Image();
+    birdImg.src = "./flappybird.png";
+    birdImg.onload = function() {
+        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+    }
+
+    topPipeImg = new Image();
+    topPipeImg.src = "./toppipe.png";
+
+    bottomPipeImg = new Image();
+    bottomPipeImg.src = "./bottompipe.png";
+
+    requestAnimationFrame(update);
+    setInterval(placePipes, 1500); //every 1.5 seconds
+    document.addEventListener("keydown", moveBird);
+    board.addEventListener("touchstart", moveBirdTouch);
+}
 
 function update() {
+    requestAnimationFrame(update);
     if (gameOver) {
         return;
     }
+    context.clearRect(0, 0, board.width, board.height);
 
     //bird
     velocityY += gravity;
+    // bird.y += velocityY;
     bird.y = Math.max(bird.y + velocityY, 0); //apply gravity to current bird.y, limit the bird.y to top of the canvas
+    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
     if (bird.y > board.height) {
         gameOver = true;
     }
 
-    // Retrieve the top 10 scores from the file
-    fs.readFile(SCORES_FILE_PATH, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading scores:', err);
-        } else {
-            const scores = data
-                .split('\n')
-                .filter(Boolean)
-                .map(scoreString => {
-                    const [playerName, score] = scoreString.split(':');
-                    return { playerName: playerName.trim(), score: parseInt(score.trim()) };
-                })
-                .sort((a, b) => b.score - a.score) // Sort scores in descending order
-                .slice(0, 10); // Get the top 10 scores
-
-            console.log('Top 10 scores:', scores);
-        }
-    });
-
-    return;
-}
-
     //pipes
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
+        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5; //0.5 because there are 2 pipes! so 0.5*2 = 1, 1 for each set of pipes
@@ -296,30 +103,9 @@ function update() {
         pipeArray.shift(); //removes first element from the array
     }
 
-    // Update the score
-    updateScore();
-
-    // Save score to file when game over
-    if (gameOver) {
-        saveScoreToFile(playerName, score);
-    }
-
-
-function render() {
-    context.clearRect(0, 0, board.width, board.height);
-
-    //bird
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-
-    //pipes
-    for (let i = 0; i < pipeArray.length; i++) {
-        let pipe = pipeArray[i];
-        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-    }
-
     //score
     context.fillStyle = "white";
-    context.font = "45px sans-serif";
+    context.font="45px sans-serif";
     context.fillText(score, 5, 45);
 
     if (gameOver) {
@@ -332,44 +118,71 @@ function placePipes() {
         return;
     }
 
-    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
-    let openingSpace = board.height / 4;
+    //(0-1) * pipeHeight/2.
+    // 0 -> -128 (pipeHeight/4)
+    // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
+    let randomPipeY = pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2);
+    let openingSpace = board.height/4;
 
     let topPipe = {
-        img: topPipeImg,
-        x: pipeX,
-        y: randomPipeY,
-        width: pipeWidth,
-        height: pipeHeight,
-        passed: false
+        img : topPipeImg,
+        x : pipeX,
+        y : randomPipeY,
+        width : pipeWidth,
+        height : pipeHeight,
+        passed : false
     }
     pipeArray.push(topPipe);
 
     let bottomPipe = {
-        img: bottomPipeImg,
-        x: pipeX,
-        y: randomPipeY + pipeHeight + openingSpace,
-        width: pipeWidth,
-        height: pipeHeight,
-        passed: false
+        img : bottomPipeImg,
+        x : pipeX,
+        y : randomPipeY + pipeHeight + openingSpace,
+        width : pipeWidth,
+        height : pipeHeight,
+        passed : false
     }
     pipeArray.push(bottomPipe);
 }
 
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        velocityY = -6; // Adjusted jump velocity
+        //jump
+        velocityY = -6;
+
+        //reset game
         if (gameOver) {
-            resetGame();
-            startGame(); // Restart the game if the player presses space after game over
-            resumeGame(); // Resume the game
+            bird.y = birdY;
+            pipeArray = [];
+            score = 0;
+            gameOver = false;
         }
     }
 }
 
+// Function to handle touch input for bird jumping
+function moveBirdTouch(e) {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+    jump();
+}
+
+// Function to handle bird jumping
+function jump() {
+    if (!gameOver) {
+        velocityY = -6; // Adjusted jump velocity for touch input
+    } else {
+        // Reset game
+        bird.y = birdY;
+        pipeArray = [];
+        score = 0;
+        gameOver = false;
+        requestAnimationFrame(update);
+    }
+}
+
 function detectCollision(a, b) {
-    return a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.y + a.height > b.y;
+    return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
+           a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
+           a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
+           a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
 }
