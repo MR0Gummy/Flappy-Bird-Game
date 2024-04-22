@@ -132,7 +132,7 @@ window.onload = function () {
     document.addEventListener("keydown", moveBird);
     document.addEventListener("touchstart", moveBird); // Add touch event listener
 }
-
+let lastFrameTime = Date.now(); // Define lastFrameTime here
 function update() {
     if (gameOver) {
         return;
@@ -142,7 +142,7 @@ function update() {
     //bird
     let currentTime = Date.now();
     let deltaTime = (currentTime - lastFrameTime) / 1000 || 0; // Calculate deltaTime
-    let lastFrameTime = Date.now(); // Define lastFrameTime here
+    
     lastFrameTime = currentTime;
 
     velocityY += gravity * deltaTime; // Apply gravity with deltaTime
