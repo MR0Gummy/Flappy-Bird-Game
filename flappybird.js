@@ -35,6 +35,8 @@ function mainLoop(currentTime) {
 document.addEventListener("keydown", function(e) {
     if (!gameStarted && (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")) {
         startGame();
+    } else if (gameOver && (e.code == "Space")) {
+        resetGame();
     }
 });
 
@@ -42,6 +44,8 @@ document.addEventListener("keydown", function(e) {
 document.addEventListener("touchstart", function() {
     if (!gameStarted) {
         startGame();
+    } else if (gameOver) {
+        resetGame();
     }
 });
 
@@ -50,6 +54,17 @@ function startGame() {
     gameStarted = true;
     lastFrameTime = performance.now(); // Initialize lastFrameTime
     requestAnimationFrame(mainLoop);
+}
+
+// Function to reset the game
+function resetGame() {
+    // Reset all game variables to their initial state
+    bird.y = birdY;
+    pipeArray = [];
+    velocityY = 0;
+    score = 0;
+    gameOver = false;
+    startGame();
 }
 
 // Rest of your game code...
