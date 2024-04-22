@@ -44,8 +44,8 @@ let animationId;
 
 //board
 let board;
-let boardWidth = 360;
-let boardHeight = 640;
+let boardWidth = 320;
+let boardHeight = 480;
 let context;
 
 //bird
