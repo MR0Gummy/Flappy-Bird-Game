@@ -1,25 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flappy Bird</title>
     <link rel="stylesheet" href="flappybird.css">
-    <script src="flappybird.js"></script>
+    <script src="flappybird.js" defer></script>
 </head>
 <body>
     <div id="startScreen">
-        <h2>Flappy Bird</h2>
+        <h1>Welcome to Flappy Bird</h1>
         <input type="text" id="playerName" placeholder="Enter your name">
         <button onclick="startGame()">Start Game</button>
     </div>
     <canvas id="board" style="display: none;"></canvas>
     <div id="endScreen" style="display: none;">
         <h2>Game Over</h2>
-        <h3 id="finalScore"></h3>
-        <h3>Top 10 Players</h3>
-        <ol id="highScores"></ol>
-        <button onclick="showStartScreen()">Restart</button>
+        <p>Your score: <span id="finalScore">0</span></p>
+        <h3>High Scores:</h3>
+        <ul id="scoresDisplay"></ul>
+        <button onclick="resetGame()">Restart</button>
+    </div>
+    <div id="scoreBoard" style="display: none;">
+        <h3>High Scores:</h3>
+        <ul id="scoresDisplay"></ul>
     </div>
 </body>
 </html>
