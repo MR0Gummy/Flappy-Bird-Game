@@ -4,7 +4,6 @@ const MS_PER_UPDATE = 16; // 60 FPS
 // Variable to keep track of accumulated time
 let accumulatedTime = 0;
 let lastTime = performance.now();
-let lastFrameTime = Date.now();
 
 
 // Define a variable to track whether the game has started
@@ -143,6 +142,7 @@ function update() {
     //bird
     let currentTime = Date.now();
     let deltaTime = (currentTime - lastFrameTime) / 1000 || 0; // Calculate deltaTime
+    let lastFrameTime = Date.now(); // Define lastFrameTime here
     lastFrameTime = currentTime;
 
     velocityY += gravity * deltaTime; // Apply gravity with deltaTime
