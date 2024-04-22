@@ -10,10 +10,8 @@ let gameOver = false;
 let bird;
 let pipeArray = [];
 let score = 0;
-let velocityX;
-let velocityY;
-let gravity;
-let jumpVelocity;
+let playerName = ""; // Added player name variable
+let highScores = []; // Array to store high scores
 
 // Main game loop
 function mainLoop(currentTime) {
@@ -28,7 +26,7 @@ function mainLoop(currentTime) {
     while (accumulatedTime >= MS_PER_UPDATE) {
         update();
         accumulatedTime -= MS_PER_UPDATE;
-    }x|
+    }
     
     // Request the next frame
     requestAnimationFrame(mainLoop);
@@ -49,6 +47,7 @@ document.addEventListener("touchstart", function() {
 
 // Start the game
 function startGame() {
+    playerName = document.getElementById('playerName').value;
     gameStarted = true;
     gameOver = false;
     accumulatedTime = 0;
@@ -107,27 +106,21 @@ velocityX = -2; //pipes moving left speed
 velocityY = 0; //bird jump speed
 
 window.onload = function () {
-    board = document.getElementById("board");
-    board.height = boardHeight;
-    board.width = boardWidth;
+    board = document.getElementById("gameCanvas");
     context = board.getContext("2d"); //used for drawing on the board
-
-    //draw flappy bird
-    // context.fillStyle = "green";
-    // context.fillRect(bird.x, bird.y, bird.width, bird.height);
 
     //load images
     birdImg = new Image();
-    birdImg.src = "./flappybird.png";
+    birdImg.src = "flappybird.png";
     birdImg.onload = function () {
         context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
 
     topPipeImg = new Image();
-    topPipeImg.src = "./toppipe.png";
+    topPipeImg.src = "toppipe.png";
 
     bottomPipeImg = new Image();
-    bottomPipeImg.src = "./bottompipe.png";
+    bottomPipeImg.src = "bottompipe.png";
 
     setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
@@ -136,6 +129,7 @@ window.onload = function () {
 
 function update() {
     if (gameOver) {
+        gameOverHandler();
         return;
     }
     context.clearRect(0, 0, board.width, board.height);
@@ -249,4 +243,18 @@ function detectCollision(a, b) {
         a.x + a.width > b.x && //a's top right corner passes b's top left corner
         a.y < b.y + b.height && //a's top left corner doesn't reach b's bottom left corner
         a.y + a.height > b.y; //a's bottom left corner passes b's top left corner
+}
+
+// Function to handle game over
+function gameOverHandler() {
+    // Add the player's score to the high scores array
+    highScores.push({name: playerName, score: score});
+    // Sort high scores array by score in descending order
+    highScores.sort((a, b) => b.score - a.score);
+    // Show the top 10 high scores
+    let leaderboard = "Top 10 High Scores:\n";
+    for (let i = 0; i < Math.min(10, highScores.length); i++) {
+        leaderboard += (i + 1) + ". " + highScores[i].name + ": " + highScores[i].score + "\n";
+    }
+    alert("Game Over!\nYour score: " + score + "\n\n" + leaderboard);
 }
