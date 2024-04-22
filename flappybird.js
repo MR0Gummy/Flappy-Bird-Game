@@ -1,18 +1,9 @@
+
 //board
 let board;
 let boardWidth = 360;
 let boardHeight = 640;
 let context;
-// Define canvas dimensions based on screen size
-let screenWidth = window.innerWidth;
-let screenHeight = window.innerHeight;
-let canvasWidth = screenWidth < 600 ? screenWidth : 360; // If screen width is less than 600 pixels, use screenWidth, else use 360
-let canvasHeight = screenWidth < 600 ? screenHeight : 640; // If screen width is less than 600 pixels, use screenHeight, else use 640
-
-// Set canvas dimensions
-board.width = canvasWidth;
-board.height = canvasHeight;
-
 
 //bird
 let birdWidth = 34; //width/height ratio = 408/228 = 17/12
@@ -72,7 +63,6 @@ window.onload = function() {
     requestAnimationFrame(update);
     setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
-    board.addEventListener("touchstart", moveBirdTouch);
 }
 
 function update() {
@@ -167,26 +157,6 @@ function moveBird(e) {
             score = 0;
             gameOver = false;
         }
-    }
-}
-
-// Function to handle touch input for bird jumping
-function moveBirdTouch(e) {
-    e.preventDefault(); // Prevent default touch behavior (like scrolling)
-    jump();
-}
-
-// Function to handle bird jumping
-function jump() {
-    if (!gameOver) {
-        velocityY = -6; // Adjusted jump velocity for touch input
-    } else {
-        // Reset game
-        bird.y = birdY;
-        pipeArray = [];
-        score = 0;
-        gameOver = false;
-        requestAnimationFrame(update);
     }
 }
 
