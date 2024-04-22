@@ -58,6 +58,78 @@ function adjustGameForScreenSize() {
         // Adjust other parameters as needed for larger screens
     }
 }
+// Opprett en variabel for å lagre spillerens navn
+let playerName;
+
+// Hent HTML-elementene
+const startScreen = document.getElementById("start-screen");
+const startForm = document.getElementById("start-form");
+const playerNameInput = document.getElementById("player-name");
+const gameScreen = document.getElementById("game-screen");
+const scoreboard = document.getElementById("scoreboard");
+const scoreList = document.getElementById("score-list");
+
+// Lytt etter innsending av skjemaet for å starte spillet
+startForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    playerName = playerNameInput.value;
+    startGame();
+});
+
+// Start spillet
+function startGame() {
+    startScreen.style.display = "none";
+    gameScreen.style.display = "block";
+    initGame();
+}
+
+// Når spillet er over, vis poengtavlen
+function showScoreboard() {
+    gameScreen.style.display = "none";
+    scoreboard.style.display = "block";
+    updateScoreboard();
+}
+
+// Oppdater poengtavlen med spillerens navn og poeng
+function updateScoreboard() {
+    const scoreItem = document.createElement("li");
+    scoreItem.textContent = `${playerName}: ${score}`;
+    scoreList.appendChild(scoreItem);
+}
+
+// Reset spillet og vis startskjermen
+function resetGame() {
+    // Tilbakestill spillet til starttilstanden
+    gameScreen.style.display = "none";
+    scoreboard.style.display = "none";
+    startScreen.style.display = "block";
+    playerNameInput.value = "";
+    score = 0;
+    pipeArray = [];
+    bird.y = birdY;
+    gameOver = false;
+    // Tøm poengtavlen
+    scoreList.innerHTML = "";
+}
+
+// Endre oppdateringsfunksjonen for å vise poengtavlen når spillet er over
+function update() {
+    if (gameOver) {
+        showScoreboard();
+        return;
+    }
+    // Annen spilllogikk her
+}
+
+// Legg til denne funksjonen for å starte spillet når siden lastes
+function initGame() {
+    board = document.getElementById("board");
+    board.height = boardHeight;
+    board.width = boardWidth;
+    context = board.getContext("2d");
+    // Fortsett med resten av spillinitialiseringen
+}
+
 
 // Call the function initially
 adjustGameForScreenSize();
