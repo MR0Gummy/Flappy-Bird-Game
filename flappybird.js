@@ -133,8 +133,13 @@ document.addEventListener('DOMContentLoaded', function() {
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
 
-    // Load images and initialize game components
-    // Add code to load images here
+    // Load bird image
+    birdImg = new Image();
+    birdImg.src = "./flappybird.png";
+    birdImg.onload = function() {
+        // Start rendering the game after the bird image is loaded
+        requestAnimationFrame(mainLoop);
+    };
 
     // Handle form submission to start the game
     document.getElementById("start-form").addEventListener("submit", function(event) {
@@ -142,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
         startGame();
     });
 });
-
 
 function update() {
     if (gameOver) {
