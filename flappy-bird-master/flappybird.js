@@ -65,7 +65,7 @@ window.onload = function() {
     document.addEventListener("keydown", moveBird);
     board.addEventListener("touchstart", moveBirdTouch);
 }
-    
+
 // Function to adjust game parameters based on screen size
 function adjustGameForScreenSize() {
     const screenWidth = window.innerWidth;
