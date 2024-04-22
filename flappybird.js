@@ -45,15 +45,19 @@ let gameOver = false;
 let score = 0;
 
 // Function to start the game
+// Function to start the game
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("board").style.display = "block";
+    document.removeEventListener("keydown", moveBird); // Remove existing event listeners
+    document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
     document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
     requestAnimationFrame(update);
     setInterval(placePipes, 1500);
 }
+
 
 // Function to display the start screen
 function showStartScreen() {
@@ -67,22 +71,43 @@ function showEndScreen() {
     document.getElementById("endScreen").style.display = "block";
 }
 
-// Function to save high scores
+// Function to save high scores to the server
 function saveHighScores() {
-    highScores.push({ name: playerName, score: score });
-    highScores.sort((a, b) => b.score - a.score);
-    if (highScores.length > 10) {
-        highScores.pop();
-    }
-    // Save to file
-    // You need to implement this part (saving to a file)
+    fetch('/saveScores', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(highScores)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to save scores');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving scores:', error);
+    });
 }
 
-// Function to load high scores
+// Function to load high scores from the server
 function loadHighScores() {
-    // Load from file
-    // You need to implement this part (loading from a file)
+    fetch('/loadScores')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load scores');
+        }
+        return response.json();
+    })
+    .then(data => {
+        highScores = data;
+    })
+    .catch(error => {
+        console.error('Error loading scores:', error);
+    });
 }
+
+
 
 // Function to display high scores
 function displayHighScores() {
