@@ -1,32 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird</title>
-    <style>
-        canvas {
-            border: 1px solid #000;
-            display: block;
-            margin: 0 auto;
-        }
-        #menu {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <div id="menu">
-        <h2>Welcome to Flappy Bird</h2>
-        <input type="text" id="playerName" placeholder="Enter your name">
-        <button onclick="startGame()">Start</button>
-    </div>
-    <canvas id="gameCanvas" width="400" height="500"></canvas>
-    <script src="game.js"></script>
-</body>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport", content="width=device-width, initial-scale=1.0">
+        <title>Flappy Bird</title>
+        <link rel="stylesheet" href="flappybird.css">
+        <script src="flappybird.js"></script>
+    </head>
+    <body>
+        <canvas id="board"></canvas>
+    </body>
 </html>

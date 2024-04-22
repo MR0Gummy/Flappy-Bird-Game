@@ -1,11 +1,10 @@
 body {
-    font-family:'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace;
     text-align: center;
     background-color: black;
 }
-
 #board {
     /* background-color: skyblue; */
     background-image: url("./flappybirdbg.png");
-    
+    background-size: cover; /* Ensures the background image covers the entire canvas */
 }
