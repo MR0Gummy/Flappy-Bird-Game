@@ -118,7 +118,6 @@ function jump() {
     }
 }
 
-// Start the game when the page is loaded
 window.onload = function () {
     board = document.getElementById("board");
     board.height = boardHeight;
@@ -142,12 +141,13 @@ window.onload = function () {
     document.addEventListener("keydown", moveBird);
     board.addEventListener("touchstart", moveBirdTouch);
 
-    // Start the game when the "Start Game" button is clicked
+    // Set up the event listener for the form submission to start the game
     document.getElementById("start-form").addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent form submission
         startGame();
     });
 }
+
 
 function update() {
     if (gameOver) {
