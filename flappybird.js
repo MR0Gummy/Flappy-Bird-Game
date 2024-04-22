@@ -4,6 +4,8 @@ const MS_PER_UPDATE = 16; // 60 FPS
 // Variable to keep track of accumulated time
 let accumulatedTime = 0;
 let lastTime = performance.now();
+let lastFrameTime = Date.now();
+
 
 // Define a variable to track whether the game has started
 let gameStarted = false;
