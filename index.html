@@ -1,13 +1,77 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport", content="width=device-width, initial-scale=1.0">
-        <title>Flappy Bird</title>
-        <link rel="stylesheet" href="flappybird.css">
-        <script src="flappybird.js"></script>
-    </head>
-    <body>
-        <canvas id="board"></canvas>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+            display: block;
+            margin: 0 auto;
+        }
+        #menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <h2>Welcome to Flappy Bird</h2>
+        <input type="text" id="playerName" placeholder="Enter your name">
+        <button onclick="startGame()">Start</button>
+    </div>
+    <canvas id="gameCanvas" width="400" height="500"></canvas>
+
+    <script>
+        // Game variables
+        let canvas, ctx;
+        let playerName;
+        let gameStarted = false;
+
+        // Initialize game
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            document.getElementById('menu').style.display = 'block';
+        }
+
+        // Start the game
+        function startGame() {
+            playerName = document.getElementById('playerName').value;
+            gameStarted = true;
+            document.getElementById('menu').style.display = 'none';
+            draw();
+        }
+
+        // Draw function
+        function draw() {
+            // Write your Flappy Bird game code here
+            // This is just a placeholder for the game logic
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#000';
+            ctx.font = '30px Arial';
+            ctx.fillText('Game in progress...', 50, canvas.height / 2);
+        }
+
+        // Function to handle game over
+        function gameOver(score) {
+            alert(playerName + ', your score: ' + score);
+            // You can implement score storage and leaderboard display here
+        }
+
+        // Add event listener for spacebar to flap the bird
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space' && gameStarted) {
+                // Code to make the bird flap
+            }
+        });
+    </script>
+</body>
 </html>

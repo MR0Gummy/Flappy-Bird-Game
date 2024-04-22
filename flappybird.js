@@ -28,7 +28,7 @@ function mainLoop(currentTime) {
     while (accumulatedTime >= MS_PER_UPDATE) {
         update();
         accumulatedTime -= MS_PER_UPDATE;
-    }
+    }x|
     
     // Request the next frame
     requestAnimationFrame(mainLoop);
