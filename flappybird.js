@@ -1,10 +1,9 @@
-// JavaScript code
-
 // Constants for different device types
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 let playerName;
 let highScores = [];
+let displayScores = false;
 
 //board
 let board;
@@ -45,7 +44,6 @@ let gameOver = false;
 let score = 0;
 
 // Function to start the game
-// Function to start the game
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
@@ -58,74 +56,56 @@ function startGame() {
     setInterval(placePipes, 1500);
 }
 
-
-// Function to display the start screen
-function showStartScreen() {
-    document.getElementById("endScreen").style.display = "none";
-    document.getElementById("startScreen").style.display = "block";
-}
-
-// Function to show end screen with score
-function showEndScreen() {
-    document.getElementById("finalScore").textContent = "Score: " + score;
-    document.getElementById("endScreen").style.display = "block";
-}
-
-// Function to save high scores to the server
-function saveHighScores() {
-    fetch('/saveScores', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(highScores)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to save scores');
-        }
-    })
-    .catch(error => {
-        console.error('Error saving scores:', error);
-    });
-}
-
-// Function to load high scores from the server
-function loadHighScores() {
-    fetch('/loadScores')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load scores');
-        }
-        return response.json();
-    })
-    .then(data => {
-        highScores = data;
-    })
-    .catch(error => {
-        console.error('Error loading scores:', error);
-    });
-}
-
-
-
-// Function to display high scores
-function displayHighScores() {
-    loadHighScores();
-    let highScoresList = document.getElementById("highScores");
-    highScoresList.innerHTML = "";
+// Function to display scores
+function displayScores() {
+    let scoresDisplay = document.getElementById("scoresDisplay");
+    scoresDisplay.innerHTML = "";
     highScores.forEach((entry, index) => {
         let li = document.createElement("li");
         li.textContent = entry.name + ": " + entry.score;
-        highScoresList.appendChild(li);
+        scoresDisplay.appendChild(li);
     });
 }
 
+// Function to reset the game
+function resetGame() {
+    bird.y = birdY;
+    pipeArray = [];
+    score = 0;
+    gameOver = false;
+    velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
+    requestAnimationFrame(update);
+}
+
+// Function to save high scores
+function saveHighScores() {
+    highScores.push({ name: playerName, score: score });
+    highScores.sort((a, b) => b.score - a.score);
+    if (highScores.length > 10) {
+        highScores.pop();
+    }
+    localStorage.setItem("highScores", JSON.stringify(highScores));
+    displayScores();
+}
+
+// Function to load high scores
+function loadHighScores() {
+    let storedScores = localStorage.getItem("highScores");
+    if (storedScores) {
+        highScores = JSON.parse(storedScores);
+    }
+    displayScores();
+}
+
 window.onload = function() {
+    loadHighScores(); // Load scores from local storage
+    if (!isMobile) {
+        document.getElementById("scoreBoard").style.display = "block"; // Display scores on computer
+    }
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
-    context = board.getContext("2d"); //used for drawing on the board
+    context = board.getContext("2d");
 
     //load images
     birdImg = new Image();
@@ -139,8 +119,6 @@ window.onload = function() {
 
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
-
-    displayHighScores();
 }
 
 function update() {
@@ -158,8 +136,8 @@ function update() {
     if (bird.y > board.height) {
         gameOver = true;
         saveHighScores();
-        displayHighScores();
-        showEndScreen();
+        displayScores();
+        document.getElementById("endScreen").style.display = "block";
     }
 
     //pipes
@@ -176,8 +154,8 @@ function update() {
         if (detectCollision(bird, pipe)) {
             gameOver = true;
             saveHighScores();
-            displayHighScores();
-            showEndScreen();
+            displayScores();
+            document.getElementById("endScreen").style.display = "block";
         }
     }
 
@@ -246,14 +224,6 @@ function jump() {
     } else {
         resetGame();
     }
-}
-
-function resetGame() {
-    bird.y = birdY;
-    pipeArray = [];
-    score = 0;
-    gameOver = false;
-    requestAnimationFrame(update);
 }
 
 function detectCollision(a, b) {
