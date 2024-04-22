@@ -1,10 +1,28 @@
-body {
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
-    background-color: black;
-}
 #board {
     /* background-color: skyblue; */
     background-image: url("./flappybirdbg.png");
     background-size: cover; /* Ensures the background image covers the entire canvas */
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+#menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1; /* Ensures the menu is above the canvas */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Ensures the canvas is behind the menu */
 }
