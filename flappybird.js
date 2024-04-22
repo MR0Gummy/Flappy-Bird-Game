@@ -1,14 +1,41 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
 
-// Remove the Permissions-Policy header related to interest-cohort
-app.use((req, res, next) => {
-  res.removeHeader('Permissions-Policy');
-  next();
+app.use(express.json());
+
+const SCORES_FILE_PATH = 'scores.txt';
+
+// Route to save score
+app.post('/scores', (req, res) => {
+    const { playerName, score } = req.body;
+    const newScore = `${playerName}: ${score}\n`;
+    fs.appendFile(SCORES_FILE_PATH, newScore, (err) => {
+        if (err) {
+            console.error('Error saving score:', err);
+            res.status(500).send('Error saving score');
+        } else {
+            console.log('Score saved successfully');
+            res.status(201).send('Score saved successfully');
+        }
+    });
 });
 
-// Other middleware and routes...
+// Route to get all scores
+app.get('/scores', (req, res) => {
+    fs.readFile(SCORES_FILE_PATH, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading scores:', err);
+            res.status(500).send('Error reading scores');
+        } else {
+            const scores = data.split('\n').filter(Boolean);
+            res.json(scores);
+        }
+    });
+});
 
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server listening on port ${port}`));
 
 // Define global variables
 let scoreboard;
@@ -93,19 +120,17 @@ function resumeGame() {
     animationId = requestAnimationFrame(mainLoop);
 }
 
-// Function to save the score to local storage
-function saveScore(score) {
-    let scores = JSON.parse(localStorage.getItem('scores')) || [];
-    scores.push(score);
-    scores.sort((a, b) => b - a); // Sort scores in descending order
-    localStorage.setItem('scores', JSON.stringify(scores));
+// Function to save the score to file
+function saveScoreToFile(playerName, score) {
+    const newScore = `${playerName}: ${score}\n`;
+    fs.appendFile(SCORES_FILE_PATH, newScore, (err) => {
+        if (err) {
+            console.error('Error saving score to file:', err);
+        } else {
+            console.log('Score saved to file successfully');
+        }
+    });
 }
-
-// Function to retrieve scores from local storage
-function getScores() {
-    return JSON.parse(localStorage.getItem('scores')) || [];
-}
-
 
 // Function to adjust game parameters based on screen size
 function adjustGameForScreenSize() {
@@ -251,6 +276,11 @@ function update() {
 
     // Update the score
     updateScore();
+
+    // Save score to file when game over
+    if (gameOver) {
+        saveScoreToFile(playerName, score);
+    }
 }
 
 function render() {
