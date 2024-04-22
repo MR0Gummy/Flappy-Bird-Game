@@ -24,4 +24,5 @@ body {
 canvas {
     display: block;
     margin: 0 auto; /* Center the canvas horizontally */
+    position: relative; /* Ensure canvas is positioned relative to its parent */
 }
