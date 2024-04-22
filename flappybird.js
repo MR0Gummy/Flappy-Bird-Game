@@ -37,11 +37,27 @@ let bottomPipeImg;
 //physics
 let velocityX = -2; //pipes moving left speed
 let velocityY = 0; //bird jump speed
-let gravity = 0.2; // Adjust gravity as needed
-let jumpVelocity = -8; // Adjust jump velocity as needed
 
 let gameOver = false;
 let score = 0;
+
+// Determine if the device is a mobile device
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+}
+
+let gravity;
+let jumpVelocity;
+
+if (isMobileDevice()) {
+    // Parameters for mobile devices
+    gravity = 0.15;
+    jumpVelocity = -6;
+} else {
+    // Parameters for desktop devices
+    gravity = 0.4;
+    jumpVelocity = -8;
+}
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -165,6 +181,8 @@ function moveBird(e) {
         resetGame();
     }
 }
+
+
 
 
 
