@@ -133,12 +133,16 @@ document.addEventListener('DOMContentLoaded', function() {
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
 
+    // Load images and initialize game components
+    // Add code to load images here
+
     // Handle form submission to start the game
     document.getElementById("start-form").addEventListener("submit", function(event) {
         event.preventDefault(); // Prevent form submission
         startGame();
     });
 });
+
 
 function update() {
     if (gameOver) {
