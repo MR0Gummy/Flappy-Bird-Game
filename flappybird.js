@@ -254,6 +254,28 @@ function update() {
         gameOver = true;
     }
 
+    // Retrieve the top 10 scores from the file
+    fs.readFile(SCORES_FILE_PATH, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading scores:', err);
+        } else {
+            const scores = data
+                .split('\n')
+                .filter(Boolean)
+                .map(scoreString => {
+                    const [playerName, score] = scoreString.split(':');
+                    return { playerName: playerName.trim(), score: parseInt(score.trim()) };
+                })
+                .sort((a, b) => b.score - a.score) // Sort scores in descending order
+                .slice(0, 10); // Get the top 10 scores
+
+            console.log('Top 10 scores:', scores);
+        }
+    });
+
+    return;
+}
+
     //pipes
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
@@ -281,7 +303,7 @@ function update() {
     if (gameOver) {
         saveScoreToFile(playerName, score);
     }
-}
+
 
 function render() {
     context.clearRect(0, 0, board.width, board.height);
