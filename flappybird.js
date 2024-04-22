@@ -4,33 +4,26 @@ const MS_PER_UPDATE = 16; // 60 FPS
 // Variable to keep track of accumulated time
 let accumulatedTime = 0;
 let lastTime = performance.now();
+let lastFrameTime;
 
 // Define a variable to track whether the game has started
 let gameStarted = false;
-
-// Variable to keep track of the last frame time
-let lastFrameTime;
 
 // Main game loop
 function mainLoop(currentTime) {
     // Calculate elapsed time since last frame
     let deltaTime = currentTime - lastTime;
     lastTime = currentTime;
-
-    // Initialize lastFrameTime if it's not defined
-    if (!lastFrameTime) {
-        lastFrameTime = currentTime;
-    }
-
+    
     // Accumulate elapsed time
     accumulatedTime += deltaTime;
-
+    
     // Update game logic in fixed time steps
     while (accumulatedTime >= MS_PER_UPDATE) {
         update();
         accumulatedTime -= MS_PER_UPDATE;
     }
-
+    
     // Render the game
     render();
     
@@ -55,12 +48,8 @@ document.addEventListener("touchstart", function() {
 // Function to start the game
 function startGame() {
     gameStarted = true;
+    lastFrameTime = performance.now(); // Initialize lastFrameTime
     requestAnimationFrame(mainLoop);
-}
-
-// Placeholder render function
-function render() {
-    // Implement your rendering logic here
 }
 
 // Rest of your game code...
@@ -125,6 +114,10 @@ window.onload = function () {
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
+
+    //draw flappy bird
+    // context.fillStyle = "green";
+    // context.fillRect(bird.x, bird.y, bird.width, bird.height);
 
     //load images
     birdImg = new Image();
@@ -203,6 +196,9 @@ function placePipes() {
         return;
     }
 
+    //(0-1) * pipeHeight/2.
+    // 0 -> -128 (pipeHeight/4)
+    // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
     let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
     let openingSpace = board.height / 4;
 
@@ -240,20 +236,6 @@ function moveBird(e) {
     if (gameOver) {
         resetGame();
     }
-}
-
-// Function to reset the game
-function resetGame() {
-    // Reset all game variables to their initial state
-    accumulatedTime = 0;
-    lastTime = performance.now();
-    gameStarted = false;
-    lastFrameTime = undefined;
-    bird.y = boardHeight / 2;
-    velocityY = 0;
-    pipeArray = [];
-    gameOver = false;
-    score = 0;
 }
 
 function detectCollision(a, b) {
