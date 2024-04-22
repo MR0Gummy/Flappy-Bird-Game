@@ -37,7 +37,8 @@ let bottomPipeImg;
 //physics
 let velocityX = -2; //pipes moving left speed
 let velocityY = 0; //bird jump speed
-let gravity = 0.4;
+let gravity = 0.2; // Adjust gravity as needed
+let jumpVelocity = -8; // Adjust jump velocity as needed
 
 let gameOver = false;
 let score = 0;
@@ -151,24 +152,20 @@ function placePipes() {
 }
 
 function moveBird(e) {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+    
     if (e.type === "keydown" && (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")) {
-        // Jump
-        velocityY = -8; // Increase jump velocity for mobile devices
-
-        // Reset game
-        if (gameOver) {
-            resetGame();
-        }
+        velocityY = jumpVelocity;
     } else if (e.type === "touchstart") {
-        // Jump for touch input
-        velocityY = -8; // Increase jump velocity for mobile devices
-
-        // Reset game
-        if (gameOver) {
-            resetGame();
-        }
+        velocityY = jumpVelocity;
+    }
+    
+    // Reset game if it's over
+    if (gameOver) {
+        resetGame();
     }
 }
+
 
 
 function detectCollision(a, b) {
