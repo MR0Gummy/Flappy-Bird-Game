@@ -88,12 +88,22 @@ function mainLoop(currentTime) {
 }
 
 // Function to start the game
+// Function to start the game
 function startGame() {
-    resetGame();
-    document.getElementById("start-screen").style.display = "none";
-    document.getElementById("game-screen").style.display = "block";
-    requestAnimationFrame(mainLoop);
+    // Hide the menu and display the game canvas
+    const menu = document.getElementById("menu");
+    const gameScreen = document.getElementById("game-container");
+    
+    if (menu && gameScreen) {
+        menu.style.display = "none";
+        gameScreen.style.display = "block";
+        // Start the game logic
+        requestAnimationFrame(mainLoop);
+    } else {
+        console.error("Menu or game-screen element not found!");
+    }
 }
+
 
 // Function to reset the game state
 function resetGame() {
