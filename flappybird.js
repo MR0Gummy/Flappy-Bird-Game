@@ -31,10 +31,64 @@ let bottomPipeImg;
 //physics
 let velocityX = -2; //pipes moving left speed
 let velocityY = 0; //bird jump speed
-let gravity = 0.4;
+let gravity = 0.4; // Adjusted gravity for phones
+
+// Define constants
+const MS_PER_UPDATE = 16; // 60 FPS
+
+// Variable to keep track of accumulated time
+let accumulatedTime = 0;
+let lastTime = performance.now();
 
 let gameOver = false;
 let score = 0;
+
+// Function to adjust game parameters based on screen size
+function adjustGameForScreenSize() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    if (screenWidth < 600) { // Small screens (e.g., phones)
+        gravity = 0.3; // Adjusted gravity for smaller screens
+        velocityY = -4; // Adjusted velocity for smaller screens
+        // Adjust other parameters as needed for smaller screens
+    } else { // Larger screens (e.g., computers)
+        gravity = 0.4; // Default gravity for larger screens
+        velocityY = -6; // Default velocity for larger screens
+        // Adjust other parameters as needed for larger screens
+    }
+}
+
+// Call the function initially
+adjustGameForScreenSize();
+
+// Call the function whenever the window is resized
+window.addEventListener('resize', adjustGameForScreenSize);
+
+// Main game loop
+function mainLoop(currentTime) {
+    // Calculate elapsed time since last frame
+    let deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    
+    // Accumulate elapsed time
+    accumulatedTime += deltaTime;
+    
+    // Update game logic in fixed time steps
+    while (accumulatedTime >= MS_PER_UPDATE) {
+        update();
+        accumulatedTime -= MS_PER_UPDATE;
+    }
+    
+    // Render the game
+    render();
+    
+    // Request the next frame
+    requestAnimationFrame(mainLoop);
+}
+
+// Start the game loop
+requestAnimationFrame(mainLoop);
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -59,7 +113,6 @@ window.onload = function() {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
-    requestAnimationFrame(update);
     setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
     board.addEventListener("touchstart", moveBirdTouch);
@@ -174,7 +227,6 @@ function jump() {
     }
 }
 
-// Function to reset the game
 function resetGame() {
     bird.y = birdY;
     pipeArray = [];
