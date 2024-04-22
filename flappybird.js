@@ -23,9 +23,6 @@ function mainLoop(currentTime) {
         accumulatedTime -= MS_PER_UPDATE;
     }
     
-    // Render the game
-    render();
-    
     // Request the next frame
     requestAnimationFrame(mainLoop);
 }
