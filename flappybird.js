@@ -5,6 +5,9 @@ const MS_PER_UPDATE = 16; // 60 FPS
 let accumulatedTime = 0;
 let lastTime = performance.now();
 
+// Define a variable to track whether the game has started
+let gameStarted = false;
+
 // Main game loop
 function mainLoop(currentTime) {
     // Calculate elapsed time since last frame
@@ -27,8 +30,27 @@ function mainLoop(currentTime) {
     requestAnimationFrame(mainLoop);
 }
 
-// Start the game loop
-requestAnimationFrame(mainLoop);
+// Add an event listener for keydown events
+document.addEventListener("keydown", function(e) {
+    if (!gameStarted && (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")) {
+        startGame();
+    }
+});
+
+// Add an event listener for touchstart events
+document.addEventListener("touchstart", function() {
+    if (!gameStarted) {
+        startGame();
+    }
+});
+
+// Function to start the game
+function startGame() {
+    gameStarted = true;
+    requestAnimationFrame(mainLoop);
+}
+
+// Rest of your game code...
 
 //board
 let board;
