@@ -1,13 +1,19 @@
 // Define constants
 const MS_PER_UPDATE = 16; // 60 FPS
 
-// Variable to keep track of accumulated time
-let accumulatedTime = 0;
-let lastTime = performance.now();
+// Variables
+let accumulatedTime;
+let lastTime;
 let lastFrameTime;
-
-// Define a variable to track whether the game has started
 let gameStarted = false;
+let gameOver = false;
+let bird;
+let pipeArray = [];
+let score = 0;
+let velocityX;
+let velocityY;
+let gravity;
+let jumpVelocity;
 
 // Main game loop
 function mainLoop(currentTime) {
@@ -28,38 +34,27 @@ function mainLoop(currentTime) {
     requestAnimationFrame(mainLoop);
 }
 
-// Add an event listener for keydown events
+// Add event listeners
 document.addEventListener("keydown", function(e) {
     if (!gameStarted && (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")) {
         startGame();
     }
 });
 
-// Add an event listener for touchstart events
 document.addEventListener("touchstart", function() {
     if (!gameStarted) {
         startGame();
     }
 });
 
-// Function to start the game
+// Start the game
 function startGame() {
     gameStarted = true;
-    lastFrameTime = performance.now(); // Initialize lastFrameTime
-    requestAnimationFrame(mainLoop);
-}
-
-// Rest of your game code...
-
-// Function to reset the game
-function resetGame() {
-    // Reset all game variables to their initial state
-    bird.y = birdY;
-    pipeArray = [];
-    velocityY = 0;
-    score = 0;
     gameOver = false;
-    startGame();
+    accumulatedTime = 0;
+    lastTime = performance.now();
+    lastFrameTime = performance.now();
+    requestAnimationFrame(mainLoop);
 }
 
 // Rest of your game code...
@@ -77,7 +72,7 @@ let birdX = boardWidth / 8;
 let birdY = boardHeight / 2;
 let birdImg;
 
-let bird = {
+bird = {
     x: birdX,
     y: birdY,
     width: birdWidth,
@@ -85,7 +80,6 @@ let bird = {
 }
 
 //pipes
-let pipeArray = [];
 let pipeWidth = 64; //width/height ratio = 384/3072 = 1/8
 let pipeHeight = 512;
 let pipeX = boardWidth;
@@ -94,20 +88,10 @@ let pipeY = 0;
 let topPipeImg;
 let bottomPipeImg;
 
-//physics
-let velocityX = -2; //pipes moving left speed
-let velocityY = 0; //bird jump speed
-
-let gameOver = false;
-let score = 0;
-
 // Determine if the device is a mobile device
 function isMobileDevice() {
     return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
 }
-
-let gravity;
-let jumpVelocity;
 
 if (isMobileDevice()) {
     // Parameters for mobile devices
@@ -118,6 +102,9 @@ if (isMobileDevice()) {
     gravity = 0.4;
     jumpVelocity = -8;
 }
+
+velocityX = -2; //pipes moving left speed
+velocityY = 0; //bird jump speed
 
 window.onload = function () {
     board = document.getElementById("board");
@@ -153,9 +140,6 @@ function update() {
     }
     context.clearRect(0, 0, board.width, board.height);
 
-    // Log bird position
-    console.log('Bird Position:', bird.x, bird.y);
-
     //bird
     let currentTime = Date.now();
     let deltaTime = (currentTime - lastFrameTime) / 1000 || 0; // Calculate deltaTime
@@ -178,9 +162,6 @@ function update() {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-
-        // Log pipe position
-        console.log('Pipe Position:', pipe.x, pipe.y);
 
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5; //0.5 because there are 2 pipes! so 0.5*2 = 1, 1 for each set of pipes
@@ -252,6 +233,15 @@ function moveBird(e) {
     if (gameOver) {
         resetGame();
     }
+}
+
+function resetGame() {
+    bird.y = birdY;
+    pipeArray = [];
+    velocityY = 0;
+    score = 0;
+    gameOver = false;
+    startGame();
 }
 
 function detectCollision(a, b) {
