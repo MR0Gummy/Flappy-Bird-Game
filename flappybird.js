@@ -88,12 +88,11 @@ function mainLoop(currentTime) {
 }
 
 // Function to start the game
-// Function to start the game
 function startGame() {
     // Hide the menu and display the game canvas
     const menu = document.getElementById("menu");
     const gameScreen = document.getElementById("game-container");
-    
+
     if (menu && gameScreen) {
         menu.style.display = "none";
         gameScreen.style.display = "block";
@@ -103,7 +102,6 @@ function startGame() {
         console.error("Menu or game-screen element not found!");
     }
 }
-
 
 // Function to reset the game state
 function resetGame() {
@@ -128,11 +126,12 @@ function jump() {
     }
 }
 
+// Start the game when the page is loaded
 document.addEventListener('DOMContentLoaded', function() {
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
-    context = board.getContext("2d");
+    context = board.getContext("2d"); //used for drawing on the board
 
     // Load images and initialize game components
     loadGameComponents();
@@ -143,8 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
         startGame();
     });
 });
-
-
 
 function update() {
     if (gameOver) {
