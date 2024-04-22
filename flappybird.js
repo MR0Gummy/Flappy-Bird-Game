@@ -151,19 +151,25 @@ function placePipes() {
 }
 
 function moveBird(e) {
-    if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        //jump
-        velocityY = -6;
+    if (e.type === "keydown" && (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")) {
+        // Jump
+        velocityY = -8; // Increase jump velocity for mobile devices
 
-        //reset game
+        // Reset game
         if (gameOver) {
-            bird.y = birdY;
-            pipeArray = [];
-            score = 0;
-            gameOver = false;
+            resetGame();
+        }
+    } else if (e.type === "touchstart") {
+        // Jump for touch input
+        velocityY = -8; // Increase jump velocity for mobile devices
+
+        // Reset game
+        if (gameOver) {
+            resetGame();
         }
     }
 }
+
 
 function detectCollision(a, b) {
     return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
