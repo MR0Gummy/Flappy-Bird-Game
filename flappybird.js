@@ -179,26 +179,28 @@ function placePipes() {
         return;
     }
 
-    let randomPipeY = pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2);
-    let openingSpace = board.height/4;
+    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+    let openingSpace = board.height / 4;
+
+    let lastPipeX = pipeArray.length > 0 ? pipeArray[pipeArray.length - 1].x : boardWidth;
 
     let topPipe = {
-        img : topPipeImg,
-        x : pipeX,
-        y : randomPipeY,
-        width : pipeWidth,
-        height : pipeHeight,
-        passed : false
+        img: topPipeImg,
+        x: lastPipeX + 200, // Adjust the horizontal distance between pipes here (e.g., 200)
+        y: randomPipeY,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
     }
     pipeArray.push(topPipe);
 
     let bottomPipe = {
-        img : bottomPipeImg,
-        x : pipeX,
-        y : randomPipeY + pipeHeight + openingSpace,
-        width : pipeWidth,
-        height : pipeHeight,
-        passed : false
+        img: bottomPipeImg,
+        x: lastPipeX + 200, // Adjust the horizontal distance between pipes here (e.g., 200)
+        y: randomPipeY + pipeHeight + openingSpace,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
     }
     pipeArray.push(bottomPipe);
 }
