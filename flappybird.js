@@ -24,9 +24,6 @@ function mainLoop(currentTime) {
         accumulatedTime -= MS_PER_UPDATE;
     }
     
-    // Render the game
-    render();
-    
     // Request the next frame
     requestAnimationFrame(mainLoop);
 }
@@ -35,8 +32,6 @@ function mainLoop(currentTime) {
 document.addEventListener("keydown", function(e) {
     if (!gameStarted && (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")) {
         startGame();
-    } else if (gameOver && (e.code == "Space")) {
-        resetGame();
     }
 });
 
@@ -44,8 +39,6 @@ document.addEventListener("keydown", function(e) {
 document.addEventListener("touchstart", function() {
     if (!gameStarted) {
         startGame();
-    } else if (gameOver) {
-        resetGame();
     }
 });
 
@@ -55,6 +48,8 @@ function startGame() {
     lastFrameTime = performance.now(); // Initialize lastFrameTime
     requestAnimationFrame(mainLoop);
 }
+
+// Rest of your game code...
 
 // Function to reset the game
 function resetGame() {
