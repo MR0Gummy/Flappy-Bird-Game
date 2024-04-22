@@ -174,36 +174,55 @@ function render() {
     }
 }
 
-function placePipes() {
+let lastPipeSpawnTime = 0; // Variable to keep track of the last pipe spawn time
+const pipeSpawnInterval = 1500; // Adjust the interval between pipe spawns here (e.g., 1500 milliseconds)
+
+function placePipes(currentTime) {
     if (gameOver) {
         return;
     }
 
-    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
-    let openingSpace = board.height / 4;
+    // Calculate the time elapsed since the last pipe spawn
+    let elapsedTime = currentTime - lastPipeSpawnTime;
 
-    let lastPipeX = pipeArray.length > 0 ? pipeArray[pipeArray.length - 1].x : boardWidth;
+    // Check if it's time to spawn a new pipe
+    if (elapsedTime > pipeSpawnInterval) {
+        let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+        let openingSpace = board.height / 4;
 
-    let topPipe = {
-        img: topPipeImg,
-        x: lastPipeX + 200, // Adjust the horizontal distance between pipes here (e.g., 200)
-        y: randomPipeY,
-        width: pipeWidth,
-        height: pipeHeight,
-        passed: false
+        let lastPipeX = pipeArray.length > 0 ? pipeArray[pipeArray.length - 1].x : boardWidth;
+
+        let topPipe = {
+            img: topPipeImg,
+            x: lastPipeX + 200, // Adjust the horizontal distance between pipes here (e.g., 200)
+            y: randomPipeY,
+            width: pipeWidth,
+            height: pipeHeight,
+            passed: false
+        }
+        pipeArray.push(topPipe);
+
+        let bottomPipe = {
+            img: bottomPipeImg,
+            x: lastPipeX + 200, // Adjust the horizontal distance between pipes here (e.g., 200)
+            y: randomPipeY + pipeHeight + openingSpace,
+            width: pipeWidth,
+            height: pipeHeight,
+            passed: false
+        }
+        pipeArray.push(bottomPipe);
+
+        // Update the last pipe spawn time
+        lastPipeSpawnTime = currentTime;
     }
-    pipeArray.push(topPipe);
 
-    let bottomPipe = {
-        img: bottomPipeImg,
-        x: lastPipeX + 200, // Adjust the horizontal distance between pipes here (e.g., 200)
-        y: randomPipeY + pipeHeight + openingSpace,
-        width: pipeWidth,
-        height: pipeHeight,
-        passed: false
-    }
-    pipeArray.push(bottomPipe);
+    // Request the next frame for spawning pipes
+    requestAnimationFrame(placePipes);
 }
+
+// Start spawning pipes
+requestAnimationFrame(placePipes);
+
 
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
