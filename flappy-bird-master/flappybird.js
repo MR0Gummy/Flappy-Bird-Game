@@ -36,6 +36,7 @@ let gravity = 0.3;
 let gameOver = false;
 let score = 0;
 
+
 window.onload = function() {
     board = document.getElementById("board");
     board.height = boardHeight;
@@ -64,6 +65,33 @@ window.onload = function() {
     document.addEventListener("keydown", moveBird);
     board.addEventListener("touchstart", moveBirdTouch);
 }
+
+// Function to adjust game parameters based on screen size
+function adjustGameForScreenSize() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    if (screenWidth < 600) { // Small screens
+        gravity = 0.3;
+        velocityY = -6;
+        // Adjust other parameters as needed
+    } else if (screenWidth < 1024) { // Medium screens
+        gravity = 0.4;
+        velocityY = -8;
+        // Adjust other parameters as needed
+    } else { // Large screens
+        gravity = 0.5;
+        velocityY = -10;
+        // Adjust other parameters as needed
+    }
+}
+
+// Call the function initially
+adjustGameForScreenSize();
+
+// Call the function whenever the window is resized
+window.addEventListener('resize', adjustGameForScreenSize);
+
 
 function update() {
     requestAnimationFrame(update);
