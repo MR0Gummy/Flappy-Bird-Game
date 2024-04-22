@@ -4,7 +4,6 @@ const MS_PER_UPDATE = 16; // 60 FPS
 // Variable to keep track of accumulated time
 let accumulatedTime = 0;
 let lastTime = performance.now();
-let lastFrameTime = Date.now(); // Initialize lastFrameTime here
 
 // Define a variable to track whether the game has started
 let gameStarted = false;
@@ -23,9 +22,6 @@ function mainLoop(currentTime) {
         update();
         accumulatedTime -= MS_PER_UPDATE;
     }
-    
-    // Render the game
-    render();
     
     // Request the next frame
     requestAnimationFrame(mainLoop);
@@ -113,6 +109,10 @@ window.onload = function () {
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
+
+    //draw flappy bird
+    // context.fillStyle = "green";
+    // context.fillRect(bird.x, bird.y, bird.width, bird.height);
 
     //load images
     birdImg = new Image();
