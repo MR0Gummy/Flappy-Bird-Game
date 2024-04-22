@@ -31,7 +31,7 @@ let bottomPipeImg;
 //physics
 let velocityX = -2; //pipes moving left speed
 let velocityY = 0; //bird jump speed
-let gravity = 0.4;
+let gravity = 0.25; // Adjusted gravity for phones
 
 // Define constants
 const MS_PER_UPDATE = 16; // 60 FPS
@@ -49,8 +49,8 @@ function adjustGameForScreenSize() {
     const screenHeight = window.innerHeight;
 
     if (screenWidth < 600) { // Small screens (e.g., phones)
-        gravity = 0.2; // Adjusted gravity for smaller screens
-        velocityY = -6; // Adjusted velocity for smaller screens
+        gravity = 0.25; // Adjusted gravity for smaller screens
+        velocityY = -4; // Adjusted velocity for smaller screens
         // Adjust other parameters as needed for smaller screens
     } else { // Larger screens (e.g., computers)
         gravity = 0.4; // Default gravity for larger screens
