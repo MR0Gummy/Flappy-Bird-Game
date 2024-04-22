@@ -59,7 +59,7 @@ function adjustGameForScreenSize() {
         // Adjust other parameters as needed for smaller screens
     } else { // Larger screens (e.g., computers)
         gravity = 0.4; // Default gravity for larger screens
-        velocityY = -6; // Default velocity for larger screens
+        velocityY = -5; // Default velocity for larger screens
         clearInterval(pipeInterval); // Clear the existing pipe placement interval
         pipeInterval = setInterval(placePipes, 1500); // Default interval for pipe placement on computers
         // Adjust other parameters as needed for larger screens
