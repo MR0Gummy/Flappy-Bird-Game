@@ -1,3 +1,15 @@
+const express = require('express');
+const app = express();
+
+// Remove the Permissions-Policy header related to interest-cohort
+app.use((req, res, next) => {
+  res.removeHeader('Permissions-Policy');
+  next();
+});
+
+// Other middleware and routes...
+
+
 // Define global variables
 let scoreboard;
 let scoreDisplay;
@@ -48,6 +60,8 @@ let lastTime = performance.now();
 let gameOver = false;
 let score = 0;
 
+let playerName;
+
 // Function to initialize scoreboard
 function initScoreboard() {
     scoreboard = document.getElementById("scoreboard");
@@ -79,6 +93,20 @@ function resumeGame() {
     animationId = requestAnimationFrame(mainLoop);
 }
 
+// Function to save the score to local storage
+function saveScore(score) {
+    let scores = JSON.parse(localStorage.getItem('scores')) || [];
+    scores.push(score);
+    scores.sort((a, b) => b - a); // Sort scores in descending order
+    localStorage.setItem('scores', JSON.stringify(scores));
+}
+
+// Function to retrieve scores from local storage
+function getScores() {
+    return JSON.parse(localStorage.getItem('scores')) || [];
+}
+
+
 // Function to adjust game parameters based on screen size
 function adjustGameForScreenSize() {
     const screenWidth = window.innerWidth;
@@ -103,7 +131,7 @@ window.addEventListener('resize', adjustGameForScreenSize);
 
 // Main game loop
 function mainLoop(currentTime) {
-    if (document.getElementById("menu").style.display === "none") {
+    if (!gameOver) {
         // Calculate elapsed time since last frame
         let deltaTime = currentTime - lastTime;
         lastTime = currentTime;
@@ -127,6 +155,12 @@ function mainLoop(currentTime) {
 
 // Function to start the game
 function startGame() {
+    playerName = document.getElementById("player-name").value;
+    if (playerName.trim() === "") {
+        alert("Please enter your name.");
+        return;
+    }
+
     // Hide the menu and display the game canvas
     const menu = document.getElementById("menu");
     const gameScreen = document.getElementById("game-container");
@@ -136,6 +170,7 @@ function startGame() {
         gameScreen.style.display = "block";
         showScoreboard(); // Show the scoreboard
         pauseGame(); // Pause the game initially
+        resetGame(); // Reset the game
     } else {
         console.error("Menu or game-screen element not found!");
     }
@@ -160,7 +195,8 @@ function jump() {
     if (!gameOver) {
         velocityY = -6; // Adjusted jump velocity for touch input
     } else {
-        resetGame();
+        startGame(); // Restart the game if the player taps after game over
+        resumeGame(); // Resume the game
     }
 }
 
@@ -273,6 +309,8 @@ function moveBird(e) {
         velocityY = -6; // Adjusted jump velocity
         if (gameOver) {
             resetGame();
+            startGame(); // Restart the game if the player presses space after game over
+            resumeGame(); // Resume the game
         }
     }
 }
