@@ -49,8 +49,8 @@ function adjustGameForScreenSize() {
     const screenHeight = window.innerHeight;
 
     if (screenWidth < 600) { // Small screens (e.g., phones)
-        gravity = 0.3; // Adjusted gravity for smaller screens
-        velocityY = -4; // Adjusted velocity for smaller screens
+        gravity = 0.4; // Adjusted gravity for smaller screens
+        velocityY = -6; // Adjusted velocity for smaller screens
         // Adjust other parameters as needed for smaller screens
     } else { // Larger screens (e.g., computers)
         gravity = 0.4; // Default gravity for larger screens
