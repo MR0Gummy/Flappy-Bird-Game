@@ -33,8 +33,62 @@ let velocityX = -2; //pipes moving left speed
 let velocityY = 0; //bird jump speed
 let gravity = 0.4;
 
+// Define constants
+const MS_PER_UPDATE = 16; // 60 FPS
+
+// Variable to keep track of accumulated time
+let accumulatedTime = 0;
+let lastTime = performance.now();
+
 let gameOver = false;
 let score = 0;
+
+// Function to adjust game parameters based on screen size
+function adjustGameForScreenSize() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    if (screenWidth < 600) { // Small screens (e.g., phones)
+        gravity = 0.2; // Adjusted gravity for smaller screens
+        velocityY = -4; // Adjusted velocity for smaller screens
+        // Adjust other parameters as needed for smaller screens
+    } else { // Larger screens (e.g., computers)
+        gravity = 0.4; // Default gravity for larger screens
+        velocityY = -6; // Default velocity for larger screens
+        // Adjust other parameters as needed for larger screens
+    }
+}
+
+// Call the function initially
+adjustGameForScreenSize();
+
+// Call the function whenever the window is resized
+window.addEventListener('resize', adjustGameForScreenSize);
+
+// Main game loop
+function mainLoop(currentTime) {
+    // Calculate elapsed time since last frame
+    let deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    
+    // Accumulate elapsed time
+    accumulatedTime += deltaTime;
+    
+    // Update game logic in fixed time steps
+    while (accumulatedTime >= MS_PER_UPDATE) {
+        update();
+        accumulatedTime -= MS_PER_UPDATE;
+    }
+    
+    // Render the game
+    render();
+    
+    // Request the next frame
+    requestAnimationFrame(mainLoop);
+}
+
+// Start the game loop
+requestAnimationFrame(mainLoop);
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -59,24 +113,19 @@ window.onload = function() {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
-    requestAnimationFrame(update);
     setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
     board.addEventListener("touchstart", moveBirdTouch);
 }
 
 function update() {
-    requestAnimationFrame(update);
     if (gameOver) {
         return;
     }
-    context.clearRect(0, 0, board.width, board.height);
 
     //bird
     velocityY += gravity;
-    // bird.y += velocityY;
     bird.y = Math.max(bird.y + velocityY, 0); //apply gravity to current bird.y, limit the bird.y to top of the canvas
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
     if (bird.y > board.height) {
         gameOver = true;
@@ -86,7 +135,6 @@ function update() {
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
-        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5; //0.5 because there are 2 pipes! so 0.5*2 = 1, 1 for each set of pipes
@@ -101,6 +149,19 @@ function update() {
     //clear pipes
     while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
         pipeArray.shift(); //removes first element from the array
+    }
+}
+
+function render() {
+    context.clearRect(0, 0, board.width, board.height);
+
+    //bird
+    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+
+    //pipes
+    for (let i = 0; i < pipeArray.length; i++) {
+        let pipe = pipeArray[i];
+        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
     }
 
     //score
@@ -118,9 +179,6 @@ function placePipes() {
         return;
     }
 
-    //(0-1) * pipeHeight/2.
-    // 0 -> -128 (pipeHeight/4)
-    // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
     let randomPipeY = pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2);
     let openingSpace = board.height/4;
 
@@ -147,15 +205,9 @@ function placePipes() {
 
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        //jump
-        velocityY = -6;
-
-        //reset game
+        velocityY = -6; // Adjusted jump velocity
         if (gameOver) {
-            bird.y = birdY;
-            pipeArray = [];
-            score = 0;
-            gameOver = false;
+            resetGame();
         }
     }
 }
@@ -171,18 +223,21 @@ function jump() {
     if (!gameOver) {
         velocityY = -6; // Adjusted jump velocity for touch input
     } else {
-        // Reset game
-        bird.y = birdY;
-        pipeArray = [];
-        score = 0;
-        gameOver = false;
-        requestAnimationFrame(update);
+        resetGame();
     }
 }
 
+function resetGame() {
+    bird.y = birdY;
+    pipeArray = [];
+    score = 0;
+    gameOver = false;
+    requestAnimationFrame(update);
+}
+
 function detectCollision(a, b) {
-    return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-           a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-           a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-           a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+    return a.x < b.x + b.width &&
+           a.x + a.width > b.x &&
+           a.y < b.y + b.height &&
+           a.y + a.height > b.y;
 }
