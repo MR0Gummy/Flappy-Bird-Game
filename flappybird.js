@@ -19,6 +19,11 @@ let bird = {
     height : birdHeight
 }
 
+// Add touch event listeners
+document.addEventListener("keydown", moveBird); // For desktop
+document.addEventListener("touchstart", moveBird); // For mobile
+
+
 //pipes
 let pipeArray = [];
 let pipeWidth = 64; //width/height ratio = 384/3072 = 1/8
