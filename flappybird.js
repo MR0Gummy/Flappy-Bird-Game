@@ -118,35 +118,22 @@ function jump() {
     }
 }
 
-window.onload = function () {
+document.addEventListener('DOMContentLoaded', function() {
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
-    context = board.getContext("2d"); //used for drawing on the board
+    context = board.getContext("2d");
 
-    // Load images
-    birdImg = new Image();
-    birdImg.src = "./flappybird.png";
-    birdImg.onload = function () {
-        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-    }
+    // Load images and initialize game components
+    loadGameComponents();
 
-    topPipeImg = new Image();
-    topPipeImg.src = "./toppipe.png";
-
-    bottomPipeImg = new Image();
-    bottomPipeImg.src = "./bottompipe.png";
-
-    setInterval(placePipes, 1500); //every 1.5 seconds
-    document.addEventListener("keydown", moveBird);
-    board.addEventListener("touchstart", moveBirdTouch);
-
-    // Set up the event listener for the form submission to start the game
-    document.getElementById("start-form").addEventListener("submit", function (event) {
+    // Handle form submission to start the game
+    document.getElementById("start-form").addEventListener("submit", function(event) {
         event.preventDefault(); // Prevent form submission
         startGame();
     });
-}
+});
+
 
 
 function update() {
