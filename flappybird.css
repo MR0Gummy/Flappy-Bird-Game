@@ -7,8 +7,14 @@ body {
 }
 
 #game-container {
-    position: relative; /* Make the container relative so its children can be positioned relative to it */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 360px; /* Set the width of the game container */
+    height: 640px; /* Set the height of the game container */
 }
+
 
 #menu {
     position: absolute;
