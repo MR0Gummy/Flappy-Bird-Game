@@ -29,9 +29,9 @@ let topPipeImg;
 let bottomPipeImg;
 
 //physics
-let velocityX = -2; //pipes moving left speed
+let velocityX = -4; //pipes moving left speed
 let velocityY = 0; //bird jump speed
-let gravity = 0.25; // Adjusted gravity for phones
+let gravity = 0.4; // Adjusted gravity for phones
 
 // Define constants
 const MS_PER_UPDATE = 16; // 60 FPS
@@ -43,25 +43,18 @@ let lastTime = performance.now();
 let gameOver = false;
 let score = 0;
 
-// Variable to hold the interval ID for placing pipes
-let pipeInterval;
-
 // Function to adjust game parameters based on screen size
 function adjustGameForScreenSize() {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
     if (screenWidth < 600) { // Small screens (e.g., phones)
-        gravity = 0.25; // Adjusted gravity for smaller screens
+        gravity = 0.4; // Adjusted gravity for smaller screens
         velocityY = -4; // Adjusted velocity for smaller screens
-        clearInterval(pipeInterval); // Clear the existing pipe placement interval
-        pipeInterval = setInterval(placePipes, 500); // Shorter interval for pipe placement on phones
         // Adjust other parameters as needed for smaller screens
     } else { // Larger screens (e.g., computers)
         gravity = 0.4; // Default gravity for larger screens
         velocityY = -6; // Default velocity for larger screens
-        clearInterval(pipeInterval); // Clear the existing pipe placement interval
-        pipeInterval = setInterval(placePipes, 1500); // Default interval for pipe placement on computers
         // Adjust other parameters as needed for larger screens
     }
 }
@@ -120,7 +113,7 @@ window.onload = function() {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
-    pipeInterval = setInterval(placePipes, 1500); //every 1.5 seconds
+    setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
     board.addEventListener("touchstart", moveBirdTouch);
 }
@@ -234,7 +227,6 @@ function jump() {
     }
 }
 
-// Function to reset the game
 function resetGame() {
     bird.y = birdY;
     pipeArray = [];
