@@ -31,6 +31,9 @@ function mainLoop(currentTime) {
         accumulatedTime -= MS_PER_UPDATE;
     }
 
+    // Render the game
+    render();
+    
     // Request the next frame
     requestAnimationFrame(mainLoop);
 }
@@ -53,6 +56,11 @@ document.addEventListener("touchstart", function() {
 function startGame() {
     gameStarted = true;
     requestAnimationFrame(mainLoop);
+}
+
+// Placeholder render function
+function render() {
+    // Implement your rendering logic here
 }
 
 // Rest of your game code...
@@ -117,10 +125,6 @@ window.onload = function () {
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d"); //used for drawing on the board
-
-    //draw flappy bird
-    // context.fillStyle = "green";
-    // context.fillRect(bird.x, bird.y, bird.width, bird.height);
 
     //load images
     birdImg = new Image();
@@ -199,9 +203,6 @@ function placePipes() {
         return;
     }
 
-    //(0-1) * pipeHeight/2.
-    // 0 -> -128 (pipeHeight/4)
-    // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
     let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
     let openingSpace = board.height / 4;
 
