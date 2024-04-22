@@ -1,4 +1,3 @@
-
 //board
 let board;
 let boardWidth = 360;
@@ -8,21 +7,16 @@ let context;
 //bird
 let birdWidth = 34; //width/height ratio = 408/228 = 17/12
 let birdHeight = 24;
-let birdX = boardWidth/8;
-let birdY = boardHeight/2;
+let birdX = boardWidth / 8;
+let birdY = boardHeight / 2;
 let birdImg;
 
 let bird = {
-    x : birdX,
-    y : birdY,
-    width : birdWidth,
-    height : birdHeight
+    x: birdX,
+    y: birdY,
+    width: birdWidth,
+    height: birdHeight
 }
-
-// Add touch event listeners
-document.addEventListener("keydown", moveBird); // For desktop
-document.addEventListener("touchstart", moveBird); // For mobile
-
 
 //pipes
 let pipeArray = [];
@@ -59,7 +53,7 @@ if (isMobileDevice()) {
     jumpVelocity = -8;
 }
 
-window.onload = function() {
+window.onload = function () {
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
@@ -72,7 +66,7 @@ window.onload = function() {
     //load images
     birdImg = new Image();
     birdImg.src = "./flappybird.png";
-    birdImg.onload = function() {
+    birdImg.onload = function () {
         context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
 
@@ -85,6 +79,7 @@ window.onload = function() {
     requestAnimationFrame(update);
     setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
+    document.addEventListener("touchstart", moveBird); // Add touch event listener
 }
 
 function update() {
@@ -95,9 +90,16 @@ function update() {
     context.clearRect(0, 0, board.width, board.height);
 
     //bird
-    velocityY += gravity;
-    // bird.y += velocityY;
-    bird.y = Math.max(bird.y + velocityY, 0); //apply gravity to current bird.y, limit the bird.y to top of the canvas
+    let currentTime = Date.now();
+    let deltaTime = (currentTime - lastFrameTime) / 1000 || 0; // Calculate deltaTime
+    lastFrameTime = currentTime;
+
+    velocityY += gravity * deltaTime; // Apply gravity with deltaTime
+    bird.y += velocityY * deltaTime; // Update bird position with deltaTime
+
+    // Clamp bird's position to the top of the canvas
+    bird.y = Math.max(bird.y, 0);
+    
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
     if (bird.y > board.height) {
@@ -127,7 +129,7 @@ function update() {
 
     //score
     context.fillStyle = "white";
-    context.font="45px sans-serif";
+    context.font = "45px sans-serif";
     context.fillText(score, 5, 45);
 
     if (gameOver) {
@@ -143,52 +145,48 @@ function placePipes() {
     //(0-1) * pipeHeight/2.
     // 0 -> -128 (pipeHeight/4)
     // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
-    let randomPipeY = pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2);
-    let openingSpace = board.height/4;
+    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+    let openingSpace = board.height / 4;
 
     let topPipe = {
-        img : topPipeImg,
-        x : pipeX,
-        y : randomPipeY,
-        width : pipeWidth,
-        height : pipeHeight,
-        passed : false
+        img: topPipeImg,
+        x: pipeX,
+        y: randomPipeY,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
     }
     pipeArray.push(topPipe);
 
     let bottomPipe = {
-        img : bottomPipeImg,
-        x : pipeX,
-        y : randomPipeY + pipeHeight + openingSpace,
-        width : pipeWidth,
-        height : pipeHeight,
-        passed : false
+        img: bottomPipeImg,
+        x: pipeX,
+        y: randomPipeY + pipeHeight + openingSpace,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
     }
     pipeArray.push(bottomPipe);
 }
 
 function moveBird(e) {
     e.preventDefault(); // Prevent default touch behavior (like scrolling)
-    
+
     if (e.type === "keydown" && (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")) {
         velocityY = jumpVelocity;
     } else if (e.type === "touchstart") {
         velocityY = jumpVelocity;
     }
-    
+
     // Reset game if it's over
     if (gameOver) {
         resetGame();
     }
 }
 
-
-
-
-
 function detectCollision(a, b) {
-    return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-           a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-           a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-           a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+    return a.x < b.x + b.width && //a's top left corner doesn't reach b's top right corner
+        a.x + a.width > b.x && //a's top right corner passes b's top left corner
+        a.y < b.y + b.height && //a's top left corner doesn't reach b's bottom left corner
+        a.y + a.height > b.y; //a's bottom left corner passes b's top left corner
 }
