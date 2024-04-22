@@ -87,9 +87,36 @@ function mainLoop(currentTime) {
     requestAnimationFrame(mainLoop);
 }
 
-// Start the game loop
-requestAnimationFrame(mainLoop);
+// Function to start the game
+function startGame() {
+    resetGame();
+    requestAnimationFrame(mainLoop);
+}
 
+// Function to reset the game state
+function resetGame() {
+    bird.y = birdY;
+    pipeArray = [];
+    score = 0;
+    gameOver = false;
+}
+
+// Function to handle touch input for bird jumping
+function moveBirdTouch(e) {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+    jump();
+}
+
+// Function to handle bird jumping
+function jump() {
+    if (!gameOver) {
+        velocityY = -6; // Adjusted jump velocity for touch input
+    } else {
+        resetGame();
+    }
+}
+
+// Start the game when the page is loaded
 window.onload = function() {
     board = document.getElementById("board");
     board.height = boardHeight;
@@ -112,6 +139,9 @@ window.onload = function() {
     setInterval(placePipes, 1500); //every 1.5 seconds
     document.addEventListener("keydown", moveBird);
     board.addEventListener("touchstart", moveBirdTouch);
+
+    // Start the game when the "Start Game" button is clicked
+    document.getElementById("start-button").addEventListener("click", startGame);
 }
 
 function update() {
@@ -206,29 +236,6 @@ function moveBird(e) {
             resetGame();
         }
     }
-}
-
-// Function to handle touch input for bird jumping
-function moveBirdTouch(e) {
-    e.preventDefault(); // Prevent default touch behavior (like scrolling)
-    jump();
-}
-
-// Function to handle bird jumping
-function jump() {
-    if (!gameOver) {
-        velocityY = -6; // Adjusted jump velocity for touch input
-    } else {
-        resetGame();
-    }
-}
-
-function resetGame() {
-    bird.y = birdY;
-    pipeArray = [];
-    score = 0;
-    gameOver = false;
-    requestAnimationFrame(update);
 }
 
 function detectCollision(a, b) {
