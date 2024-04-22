@@ -109,22 +109,33 @@ window.onload = function () {
     board = document.getElementById("gameCanvas");
     context = board.getContext("2d"); //used for drawing on the board
 
-    //load images
+    // Load images
     birdImg = new Image();
-    birdImg.src = "flappybird.png";
-    birdImg.onload = function () {
-        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-    }
+    birdImg.onload = function() {
+        console.log("Flappy Bird image loaded successfully.");
+    };
+    birdImg.onerror = function() {
+        console.error("Error loading Flappy Bird image.");
+    };
+    birdImg.src = "path/to/flappybird.png"; // Update path to flappybird.png
 
     topPipeImg = new Image();
-    topPipeImg.src = "toppipe.png";
+    topPipeImg.onload = function() {
+        console.log("Top pipe image loaded successfully.");
+    };
+    topPipeImg.onerror = function() {
+        console.error("Error loading top pipe image.");
+    };
+    topPipeImg.src = "path/to/toppipe.png"; // Update path to toppipe.png
 
     bottomPipeImg = new Image();
-    bottomPipeImg.src = "bottompipe.png";
-
-    setInterval(placePipes, 1500); //every 1.5 seconds
-    document.addEventListener("keydown", moveBird);
-    document.addEventListener("touchstart", moveBird); // Add touch event listener
+    bottomPipeImg.onload = function() {
+        console.log("Bottom pipe image loaded successfully.");
+    };
+    bottomPipeImg.onerror = function() {
+        console.error("Error loading bottom pipe image.");
+    };
+    bottomPipeImg.src = "path/to/bottompipe.png"; // Update path to bottompipe.png
 }
 
 function update() {
