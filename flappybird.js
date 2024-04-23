@@ -43,7 +43,6 @@ let gameOver = true;
 let score = 0;
 
 // Function to start the game
-// Function to start the game
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
@@ -62,6 +61,7 @@ document.addEventListener("keydown", function(event) {
         startGame();
     }
 });
+
 
 
 
@@ -222,12 +222,11 @@ function placePipes() {
     pipeArray.push(bottomPipe);
 }
 
-function moveBird(e) {
-    if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
-
-        if (gameOver) {
-            resetGame();
+// Function to handle bird movement
+function moveBird(event) {
+    if (event.code === "Space") { // Only respond to spacebar key
+        if (!gameOver) {
+            jump();
         }
     }
 }
