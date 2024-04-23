@@ -149,7 +149,9 @@ function update() {
     if (gameOver) {
         return;
     }
-    
+    console.log("before cancas clear")
+    context.clearRect(0, 0, board.width, board.height);
+    console.log("after canvas clear")
 
     // Update bird position
     velocityY += gravity;
