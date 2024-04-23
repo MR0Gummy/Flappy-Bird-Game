@@ -43,7 +43,6 @@ let gameOver = true;
 let score = 0;
 
 // Function to start the game
-// Function to start the game
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
