@@ -107,7 +107,7 @@ window.onload = function() {
     board.width = boardWidth;
     context = board.getContext("2d");
 
-    //load images
+    // Draw the initial bird image
     birdImg = new Image();
     birdImg.src = "./flappybird.png";
     birdImg.onload = function() {
@@ -127,6 +127,7 @@ window.onload = function() {
         }
     });
 }
+
 
 function update() {
     requestAnimationFrame(update);
