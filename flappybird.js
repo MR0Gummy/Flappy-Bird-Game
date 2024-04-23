@@ -3,7 +3,6 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 let playerName;
 let highScores = [];
-let displayScores = false;
 
 //board
 let board;
@@ -47,7 +46,7 @@ let score = 0;
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
-    document.getElementById("board").style.display = "block";
+    document.getElementById("gameScreen").style.display = "block";
     document.removeEventListener("keydown", moveBird); // Remove existing event listeners
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);

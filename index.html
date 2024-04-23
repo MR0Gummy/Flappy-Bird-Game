@@ -11,7 +11,7 @@
     <div id="startScreen">
         <h1>Welcome to Flappy Bird</h1>
         <input type="text" id="playerName" placeholder="Enter your name">
-        <button onclick="startGame()">Start Game</button>
+        <button id="startButton">Start Game</button>
     </div>
     <div id="gameScreen" style="display: none;">
         <canvas id="board"></canvas>
@@ -20,12 +20,12 @@
         <h2>Game Over</h2>
         <p>Your score: <span id="finalScore">0</span></p>
         <h3>High Scores:</h3>
-        <ul class="scoresDisplay"></ul>
-        <button onclick="resetGame()">Restart</button>
+        <ul id="scoresDisplay"></ul>
+        <button id="restartButton">Restart</button>
     </div>
     <div id="scoreBoard" style="display: none;">
         <h3>High Scores:</h3>
-        <ul class="scoresDisplay"></ul>
+        <ul id="scoresDisplayBoard"></ul>
     </div>
 </body>
 </html>
