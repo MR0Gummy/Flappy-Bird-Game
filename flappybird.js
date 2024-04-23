@@ -36,17 +36,17 @@ let bottomPipeImg;
 
 //physics
 let velocityX = -2; //pipes moving left speed
-let velocityY = isMobile ? -4 : 0; // Adjusted jump velocity for mobile devices
+let velocityY = isMobile ? 0 : 0; // Adjusted jump velocity for mobile devices
 let gravity = 0.4;
 
-let gameOver = false;
+let gameOver = true;
 let score = 0;
 
 // Function to start the game
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
-    document.getElementById("board").style.display = "block";
+    document.getElementById("gameScreen").style.display = "block";
     document.removeEventListener("keydown", moveBird); // Remove existing event listeners
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
@@ -72,8 +72,8 @@ function resetGame() {
     bird.y = birdY;
     pipeArray = [];
     score = 0;
-    gameOver = false;
-    velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
+    gameOver = true;
+    velocityY = isMobile ? 0 : 0; // Reset jump velocity for mobile devices
     requestAnimationFrame(update);
 }
 
