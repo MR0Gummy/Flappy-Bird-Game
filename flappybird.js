@@ -36,36 +36,24 @@ let bottomPipeImg;
 
 //physics
 let velocityX = -2; //pipes moving left speed
-let velocityY = isMobile ? 0 : 0; // Adjusted jump velocity for mobile devices
+let velocityY = isMobile ? -4 : 0; // Adjusted jump velocity for mobile devices
 let gravity = 0.4;
 
-let gameOver = true;
+let gameOver = false;
 let score = 0;
 
 // Function to start the game
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
-    document.getElementById("gameScreen").style.display = "block"; // Show game screen
+    document.getElementById("board").style.display = "block";
     document.removeEventListener("keydown", moveBird); // Remove existing event listeners
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
     document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
     // Initialize game state without instantly transitioning to game over screen
     resetGame();
-    // Start the game loop
-    requestAnimationFrame(update);
 }
-
-
-// Function to start the game when spacebar is pressed
-document.addEventListener("keydown", function(event) {
-    if (event.code === "Space") {
-        startGame();
-    }
-});
-
-
 
 // Function to display scores
 function displayScores() {
@@ -83,8 +71,8 @@ function resetGame() {
     bird.y = birdY;
     pipeArray = [];
     score = 0;
-    gameOver = true;
-    velocityY = isMobile ? 0 : 0; // Reset jump velocity for mobile devices
+    gameOver = false;
+    velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
     requestAnimationFrame(update);
 }
 
@@ -118,7 +106,7 @@ window.onload = function() {
     board.width = boardWidth;
     context = board.getContext("2d");
 
-    // Draw the initial bird image
+    //load images
     birdImg = new Image();
     birdImg.src = "./flappybird.png";
     birdImg.onload = function() {
@@ -137,16 +125,38 @@ window.onload = function() {
             startGame();
         }
     });
+
+    // Add event listener for space key to move the bird
+    document.addEventListener("keydown", moveBird);
 }
 
+// Function to handle bird movement
+function moveBird(event) {
+    if (event.code === "Space") { // Only respond to spacebar key
+        if (!gameOver) {
+            jump();
+        }
+    }
+}
+
+function moveBirdTouch(e) {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+    jump();
+}
+
+function jump() {
+    if (!gameOver) {
+        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
+    } else {
+        resetGame();
+    }
+}
 
 function update() {
-    console.log("Updating...");
     requestAnimationFrame(update);
     if (gameOver) {
         return;
     }
-
     context.clearRect(0, 0, board.width, board.height);
 
     // Update bird position
@@ -224,28 +234,6 @@ function placePipes() {
         passed: false
     }
     pipeArray.push(bottomPipe);
-}
-
-// Function to handle bird movement
-function moveBird(event) {
-    if (event.code === "Space") { // Only respond to spacebar key
-        if (!gameOver) {
-            jump();
-        }
-    }
-}
-
-function moveBirdTouch(e) {
-    e.preventDefault(); // Prevent default touch behavior (like scrolling)
-    jump();
-}
-
-function jump() {
-    if (!gameOver) {
-        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
-    } else {
-        resetGame();
-    }
 }
 
 function detectCollision(a, b) {
