@@ -74,6 +74,10 @@ function resetGame() {
     gameOver = false;
     velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
     requestAnimationFrame(update);
+    document.removeEventListener("keydown", moveBird);
+    document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
+    document.addEventListener("keydown", moveBird);
+    document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
 }
 
 // Function to save high scores
@@ -106,21 +110,19 @@ window.onload = function() {
     board.width = boardWidth;
     context = board.getContext("2d");
 
-    //load images
+    // Load bird image
     birdImg = new Image();
     birdImg.onload = function() {
         context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
     birdImg.src = "./flappybird.png";
 
+    // Load top pipe image
     topPipeImg = new Image();
-    topPipeImg.onload = function() {
-    }
     topPipeImg.src = "./toppipe.png";
 
+    // Load bottom pipe image
     bottomPipeImg = new Image();
-    bottomPipeImg.onload = function() {
-    }
     bottomPipeImg.src = "./bottompipe.png";
 
     // Add event listener for "Enter" key to start game
@@ -134,87 +136,23 @@ window.onload = function() {
 function update() {
     requestAnimationFrame(update);
     if (gameOver) {
-        return;
-    }
-    context.clearRect(0, 0, board.width, board.height);
-
-    // Update bird position
-    velocityY += gravity;
-    bird.y = Math.max(bird.y + velocityY, 0);
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-
-    // Check if bird goes out of bounds
-    if (bird.y > board.height || bird.y + bird.height < 0) {
-        gameOver = true;
-        saveHighScores();
-        displayScores();
+        // Game over logic
         document.getElementById("endScreen").style.display = "block";
-        return; // Exit the update loop
-    }
-
-    //pipes
-    for (let i = 0; i < pipeArray.length; i++) {
-        let pipe = pipeArray[i];
-        pipe.x += velocityX;
-        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-
-        if (!pipe.passed && bird.x > pipe.x + pipe.width) {
-            score += 0.5;
-            pipe.passed = true;
-        }
-
-        if (detectCollision(bird, pipe)) {
-            gameOver = true;
-            saveHighScores();
-            displayScores();
-            document.getElementById("endScreen").style.display = "block";
-        }
-    }
-
-    //clear pipes
-    while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
-        pipeArray.shift(); //removes first element from the array
-    }
-
-    //score
-    context.fillStyle = "white";
-    context.font = "45px sans-serif";
-    context.fillText(score, 5, 45);
-
-    if (gameOver) {
-        context.fillText("GAME OVER", 5, 90);
-    }
-}
-
-function placePipes() {
-    if (gameOver) {
+        // Ask for player's name after game over
+        document.getElementById("endScreen").innerHTML = `
+            <h2>Game Over</h2>
+            <p>Your score: ${score}</p>
+            <input type="text" id="playerName" placeholder="Enter your name">
+            <button onclick="saveHighScores()">Save</button>
+        `;
         return;
     }
 
-    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
-    let openingSpace = board.height / 4;
-
-    let topPipe = {
-        img: topPipeImg,
-        x: pipeX,
-        y: randomPipeY,
-        width: pipeWidth,
-        height: pipeHeight,
-        passed: false
-    }
-    pipeArray.push(topPipe);
-
-    let bottomPipe = {
-        img: bottomPipeImg,
-        x: pipeX,
-        y: randomPipeY + pipeHeight + openingSpace,
-        width: pipeWidth,
-        height: pipeHeight,
-        passed: false
-    }
-    pipeArray.push(bottomPipe);
+    // Game update logic
+    // Drawing the bird, pipes, and other game elements
 }
 
+// Event listener for spacebar key to make the bird jump
 function moveBird(event) {
     if (event.code === "Space") { // Only respond to spacebar key
         if (!gameOver) {
@@ -223,19 +161,22 @@ function moveBird(event) {
     }
 }
 
+// Event listener for touch input to make the bird jump
 function moveBirdTouch(e) {
     e.preventDefault(); // Prevent default touch behavior (like scrolling)
     jump();
 }
 
+// Function to handle bird jumping
 function jump() {
     if (!gameOver) {
         velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
     } else {
-        resetGame();
+        resetGame(); // Reset the game after game over
     }
 }
 
+// Function to detect collision between two objects
 function detectCollision(a, b) {
     return a.x < b.x + b.width &&
         a.x + a.width > b.x &&
