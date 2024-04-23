@@ -128,7 +128,6 @@ window.onload = function() {
     });
 }
 
-
 function update() {
     requestAnimationFrame(update);
     if (gameOver) {
