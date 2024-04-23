@@ -127,16 +127,18 @@ function update() {
     }
     context.clearRect(0, 0, board.width, board.height);
 
-    //bird
+    // Update bird position
     velocityY += gravity;
     bird.y = Math.max(bird.y + velocityY, 0);
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
-    if (bird.y > board.height) {
+    // Check if bird goes out of bounds
+    if (bird.y > board.height || bird.y + bird.height < 0) {
         gameOver = true;
         saveHighScores();
         displayScores();
         document.getElementById("endScreen").style.display = "block";
+        return; // Exit the update loop
     }
 
     //pipes
