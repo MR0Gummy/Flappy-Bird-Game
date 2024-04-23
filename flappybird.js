@@ -43,10 +43,11 @@ let gameOver = true;
 let score = 0;
 
 // Function to start the game
+// Function to start the game
 function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
-    document.getElementById("gameScreen").style.display = "block";
+    document.getElementById("gameScreen").style.display = "block"; // Show game screen
     document.removeEventListener("keydown", moveBird); // Remove existing event listeners
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
@@ -54,6 +55,14 @@ function startGame() {
     // Initialize game state without instantly transitioning to game over screen
     resetGame();
 }
+
+// Function to start the game when spacebar is pressed
+document.addEventListener("keydown", function(event) {
+    if (event.code === "Space") {
+        startGame();
+    }
+});
+
 
 
 // Function to display scores
