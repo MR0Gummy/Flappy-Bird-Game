@@ -5,15 +5,6 @@ body {
     color:white;
 }
 
-#finalScore {
-    color:blue;   
-}
-
-#startScreen{
-    h1{
-        color:blue;
-    }
-}
 
 #board {
     /* background-color: skyblue; */
