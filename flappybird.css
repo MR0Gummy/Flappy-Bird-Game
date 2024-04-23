@@ -6,12 +6,12 @@ body {
 }
 
 #finalScore {
-    color: white;   
+    color:blue;   
 }
 
 #startScreen{
     h1{
-        color:white;
+        color:blue;
     }
 }
 
