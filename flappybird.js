@@ -42,8 +42,8 @@ let gravity = 0.4;
 let gameOver = false;
 let score = 0;
 
+// Function to start the game
 function startGame() {
-    console.log("startGame() called"); // Add this log to check if startGame() is being called
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("board").style.display = "block";
@@ -54,7 +54,6 @@ function startGame() {
     // Initialize game state without instantly transitioning to game over screen
     resetGame();
 }
-
 
 // Function to display scores
 function displayScores() {
@@ -75,10 +74,6 @@ function resetGame() {
     gameOver = false;
     velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
     requestAnimationFrame(update);
-    document.removeEventListener("keydown", moveBird);
-    document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
-    document.addEventListener("keydown", moveBird);
-    document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
 }
 
 // Function to save high scores
@@ -102,8 +97,6 @@ function loadHighScores() {
 }
 
 window.onload = function() {
-    console.log("Window loaded"); // Add this line
-
     loadHighScores(); // Load scores from local storage
     if (!isMobile) {
         document.getElementById("scoreBoard").style.display = "block"; // Display scores on computer
@@ -116,42 +109,34 @@ window.onload = function() {
     //load images
     birdImg = new Image();
     birdImg.onload = function() {
-        console.log("Bird image loaded"); // Add this line
         context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
     birdImg.src = "./flappybird.png";
 
     topPipeImg = new Image();
     topPipeImg.onload = function() {
-        console.log("Top pipe image loaded"); // Add this line
     }
     topPipeImg.src = "./toppipe.png";
 
     bottomPipeImg = new Image();
     bottomPipeImg.onload = function() {
-        console.log("Bottom pipe image loaded"); // Add this line
     }
     bottomPipeImg.src = "./bottompipe.png";
 
     // Add event listener for "Enter" key to start game
     document.getElementById("playerName").addEventListener("keypress", function(event) {
-        console.log("Key pressed: " + event.key); // Add this line
         if (event.key === "Enter") {
             startGame();
         }
     });
 }
 
-
 function update() {
-    console.log("update function called")
     requestAnimationFrame(update);
     if (gameOver) {
         return;
     }
-    console.log("before cancas clear")
     context.clearRect(0, 0, board.width, board.height);
-    console.log("after canvas clear")
 
     // Update bird position
     velocityY += gravity;
@@ -202,7 +187,6 @@ function update() {
 }
 
 function placePipes() {
-    console.log("Pipe placed")
     if (gameOver) {
         return;
     }
@@ -232,7 +216,6 @@ function placePipes() {
 }
 
 function moveBird(event) {
-    console.log("Bird moved")
     if (event.code === "Space") { // Only respond to spacebar key
         if (!gameOver) {
             jump();
