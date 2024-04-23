@@ -42,8 +42,6 @@ let gravity = 0.4;
 let gameOver = false;
 let score = 0;
 
-// Function to start the game
-// Function to start the game
 function startGame() {
     console.log("startGame() called"); // Add this log to check if startGame() is being called
     playerName = document.getElementById("playerName").value;
@@ -146,6 +144,7 @@ window.onload = function() {
 
 
 function update() {
+    console.log("update function called")
     requestAnimationFrame(update);
     if (gameOver) {
         return;
@@ -201,6 +200,7 @@ function update() {
 }
 
 function placePipes() {
+    console.log("Pipe placed")
     if (gameOver) {
         return;
     }
@@ -230,6 +230,7 @@ function placePipes() {
 }
 
 function moveBird(event) {
+    console.log("Bird moved")
     if (event.code === "Space") { // Only respond to spacebar key
         if (!gameOver) {
             jump();
