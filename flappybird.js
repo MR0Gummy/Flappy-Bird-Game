@@ -51,9 +51,10 @@ function startGame() {
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
     document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
-    requestAnimationFrame(update);
-    setInterval(placePipes, 1500);
+    // Initialize game state without instantly transitioning to game over screen
+    resetGame();
 }
+
 
 // Function to display scores
 function displayScores() {
@@ -118,7 +119,15 @@ window.onload = function() {
 
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
+
+    // Add event listener for "Enter" key to start game
+    document.getElementById("playerName").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            startGame();
+        }
+    });
 }
+
 
 function update() {
     requestAnimationFrame(update);
