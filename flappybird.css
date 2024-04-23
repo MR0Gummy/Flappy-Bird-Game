@@ -16,8 +16,9 @@ body {
     text-align: center;
 }
 
-#scoresDisplay.centered {
-    display: inline-block;
-    text-align: left;
-    margin: 0 auto;
+#scoresDisplay {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0 auto; /* Center horizontally */
+    text-align: left; /* Align text to the left */
 }
