@@ -101,6 +101,8 @@ function loadHighScores() {
 }
 
 window.onload = function() {
+    console.log("Window loaded"); // Add this line
+
     loadHighScores(); // Load scores from local storage
     if (!isMobile) {
         document.getElementById("scoreBoard").style.display = "block"; // Display scores on computer
@@ -112,24 +114,33 @@ window.onload = function() {
 
     //load images
     birdImg = new Image();
-    birdImg.src = "./flappybird.png";
     birdImg.onload = function() {
+        console.log("Bird image loaded"); // Add this line
         context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
+    birdImg.src = "./flappybird.png";
 
     topPipeImg = new Image();
+    topPipeImg.onload = function() {
+        console.log("Top pipe image loaded"); // Add this line
+    }
     topPipeImg.src = "./toppipe.png";
 
     bottomPipeImg = new Image();
+    bottomPipeImg.onload = function() {
+        console.log("Bottom pipe image loaded"); // Add this line
+    }
     bottomPipeImg.src = "./bottompipe.png";
 
     // Add event listener for "Enter" key to start game
     document.getElementById("playerName").addEventListener("keypress", function(event) {
+        console.log("Key pressed: " + event.key); // Add this line
         if (event.key === "Enter") {
             startGame();
         }
     });
 }
+
 
 function update() {
     requestAnimationFrame(update);
