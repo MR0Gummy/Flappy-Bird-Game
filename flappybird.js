@@ -3,7 +3,6 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 let playerName;
 let highScores = [];
-let displayScores = false;
 
 //board
 let board;
