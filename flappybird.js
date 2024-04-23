@@ -47,12 +47,12 @@ function startGame() {
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("board").style.display = "block";
-    document.removeEventListener("keydown", moveBird); // Remove existing event listeners
+    document.removeEventListener("keydown", moveBird);
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
     document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
-    // Initialize game state without instantly transitioning to game over screen
-    resetGame();
+    requestAnimationFrame(update);
+    setInterval(placePipes, 1500);
 }
 
 // Function to display scores
@@ -74,6 +74,10 @@ function resetGame() {
     gameOver = false;
     velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
     requestAnimationFrame(update);
+    document.removeEventListener("keydown", moveBird);
+    document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
+    document.addEventListener("keydown", moveBird);
+    document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
 }
 
 // Function to save high scores
@@ -125,31 +129,6 @@ window.onload = function() {
             startGame();
         }
     });
-
-    // Add event listener for space key to move the bird
-    document.addEventListener("keydown", moveBird);
-}
-
-// Function to handle bird movement
-function moveBird(event) {
-    if (event.code === "Space") { // Only respond to spacebar key
-        if (!gameOver) {
-            jump();
-        }
-    }
-}
-
-function moveBirdTouch(e) {
-    e.preventDefault(); // Prevent default touch behavior (like scrolling)
-    jump();
-}
-
-function jump() {
-    if (!gameOver) {
-        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
-    } else {
-        resetGame();
-    }
 }
 
 function update() {
@@ -234,6 +213,27 @@ function placePipes() {
         passed: false
     }
     pipeArray.push(bottomPipe);
+}
+
+function moveBird(event) {
+    if (event.code === "Space") { // Only respond to spacebar key
+        if (!gameOver) {
+            jump();
+        }
+    }
+}
+
+function moveBirdTouch(e) {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+    jump();
+}
+
+function jump() {
+    if (!gameOver) {
+        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
+    } else {
+        resetGame();
+    }
 }
 
 function detectCollision(a, b) {
