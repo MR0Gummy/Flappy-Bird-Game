@@ -4,6 +4,15 @@ body {
     background-color: black;
     color:white;
 }
+
+#finalScore {
+    color: white;   
+}
+#startScreen{
+    h1{
+        color:white;
+    }
+}
 #board {
     /* background-color: skyblue; */
     background-image: url("./flappybirdbg.png");
