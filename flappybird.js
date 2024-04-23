@@ -67,7 +67,6 @@ document.addEventListener("keydown", function(event) {
 
 
 
-
 // Function to display scores
 function displayScores() {
     let scoresDisplay = document.getElementById("scoresDisplay");
@@ -142,10 +141,12 @@ window.onload = function() {
 
 
 function update() {
+    console.log("Updating...");
     requestAnimationFrame(update);
     if (gameOver) {
         return;
     }
+
     context.clearRect(0, 0, board.width, board.height);
 
     // Update bird position
