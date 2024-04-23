@@ -149,7 +149,7 @@ function update() {
     if (gameOver) {
         return;
     }
-    context.clearRect(0, 0, board.width, board.height);
+    
 
     // Update bird position
     velocityY += gravity;
