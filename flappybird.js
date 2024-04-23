@@ -43,17 +43,20 @@ let gameOver = false;
 let score = 0;
 
 // Function to start the game
+// Function to start the game
 function startGame() {
+    console.log("startGame() called"); // Add this log to check if startGame() is being called
     playerName = document.getElementById("playerName").value;
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("board").style.display = "block";
-    document.removeEventListener("keydown", moveBird);
+    document.removeEventListener("keydown", moveBird); // Remove existing event listeners
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
     document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
-    requestAnimationFrame(update);
-    setInterval(placePipes, 1500);
+    // Initialize game state without instantly transitioning to game over screen
+    resetGame();
 }
+
 
 // Function to display scores
 function displayScores() {
