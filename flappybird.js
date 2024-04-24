@@ -99,7 +99,9 @@ function saveHighScores() {
     document.getElementById("playerName").value = ""; // Clear input field after saving
     document.getElementById("endScreen").style.display = "none"; // Hide end screen
     document.getElementById("startScreen").style.display = "flex"; // Show start screen
+    document.getElementById("gameScreen").style.display = "none"; // Hide game screen
 }
+
 
 // Function to load high scores
 function loadHighScores() {
