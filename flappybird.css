@@ -21,13 +21,6 @@ body {
     cursor: pointer;
 }
 
-#scoresDisplay {
-    list-style-type: none;
-    padding: 0;
-    margin: 0; /* Remove margin between "High Scores" and scores */
-    text-align: center;
-}
-
 #gameScreen {
     display: none;
     justify-content: center;
@@ -45,9 +38,10 @@ body {
 
 /* Center the scores */
 #scoresDisplay {
-    position: absolute;
-    top: 10px; /* Adjust positioning if needed */
-    left: 10px; /* Adjust positioning if needed */
+    list-style-type: none;
+    padding: 0;
+    margin: 0; /* Remove margin between "High Scores" and scores */
+    text-align: center;
 }
 
 #endScreen {
