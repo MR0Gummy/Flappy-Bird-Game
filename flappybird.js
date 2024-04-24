@@ -118,8 +118,123 @@ window.onload = function() {
     board.width = boardWidth;
     context = board.getContext("2d");
 
-    // Load bird image, pipe images, and add event listener for "Start Game" button click
-    // (your existing code here...)
+    // Load bird image
+    birdImg = new Image();
+    birdImg.onload = function() {
+        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+    }
+    birdImg.src = "./flappybird.png";
+
+    // Load top pipe image
+    topPipeImg = new Image();
+    topPipeImg.src = "./toppipe.png";
+
+    // Load bottom pipe image
+    bottomPipeImg = new Image();
+    bottomPipeImg.src = "./bottompipe.png";
+
+    // Add event listener for "Start Game" button click
+    document.getElementById("startButton").addEventListener("click", startGame);
+    document.addEventListener("keydown", moveBird);
+}
+
+let pipeSpawnCounter = 0; // Counter to keep track of pipe spawning
+let pipeSpawnDelay = 100; // Delay between pipe spawns (adjust as needed)
+
+function update() {
+    console.log("update function called");
+    requestAnimationFrame(update);
+    if (gameOver) {
+        // Game over logic
+        displayEndScores(); // Display high scores
+        return;
+    }
+
+    // Update bird position
+    velocityY += gravity;
+    bird.y += velocityY;
+
+    // Update pipe positions
+    for (let i = 0; i < pipeArray.length; i++) {
+        let pipe = pipeArray[i];
+        pipe.x += velocityX;
+
+        // Check for collision with pipes
+        if (detectCollision(bird, pipe)) {
+            gameOver = true;
+            break; // Exit loop early since the game is over
+        }
+
+        // Check if bird passes the pipe to increment score
+        if (bird.x > pipe.x + pipe.width && !pipe.passed) {
+            score += 0.5;
+            pipe.passed = true;
+        }
+    }
+
+    // Check for out of bounds
+    if (bird.y > board.height || bird.y + bird.height < 0) {
+        gameOver = true;
+    }
+
+    // Increment pipe spawn counter
+    pipeSpawnCounter++;
+
+    // Spawn new pipes if counter reaches delay
+    if (pipeSpawnCounter >= pipeSpawnDelay) {
+        placePipes();
+        pipeSpawnCounter = 0; // Reset the counter
+    }
+
+    // Drawing logic
+    context.clearRect(0, 0, board.width, board.height);
+    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+
+    // Drawing pipes
+    for (let i = 0; i < pipeArray.length; i++) {
+        let pipe = pipeArray[i];
+        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+    }
+
+    // Drawing score
+    context.fillStyle = "white";
+    context.font = "20px sans-serif";
+    context.fillText(score, 10, 30);
+}
+
+function restartGame() {
+    document.getElementById("endScreen").style.display = "none";
+    resetGame();
+    startGame();
+}
+
+function placePipes() {
+    if (gameOver) {
+        return;
+    }
+
+    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+    let openingSpace = board.height / 4;
+
+    let topPipe = {
+        img: topPipeImg,
+        x: pipeX,
+        y: randomPipeY,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
+    }
+    pipeArray.push(topPipe);
+
+    let bottomPipe = {
+        img: bottomPipeImg,
+        x: pipeX,
+        y: randomPipeY + pipeHeight + openingSpace,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
+    }
+    pipeArray.push(bottomPipe);
 }
 
 // Function to display high scores at the end of the game
