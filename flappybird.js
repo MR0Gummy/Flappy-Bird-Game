@@ -44,10 +44,6 @@ let score = 0;
 // Function to start the game
 function startGame() {
     console.log("startGame() called");
-    let playerName = document.getElementById("playerName").value;
-    if (playerName.trim() === "") {
-        playerName = "Anonymous"; // Set default name if no name is provided
-    }
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "block";
     document.getElementById("scoreBoard").style.display = "none"; // Hide high scores
@@ -63,7 +59,8 @@ function startGame() {
 // Function to display scores
 function displayScores() {
     let scoresDisplay = document.getElementById("scoresDisplay");
-    scoresDisplay.innerHTML = ""; // Clear previous scores
+    scoresDisplay.style.display = "block"; // Show scores
+    scoresDisplay.innerHTML = "";
     highScores.forEach((entry, index) => {
         let li = document.createElement("li");
         li.textContent = entry.name + ": " + entry.score;
@@ -83,9 +80,10 @@ function resetGame() {
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
     document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
+    displayScores(); // Display high scores at the start of the game
 }
 
-// Function to save high scores
+// Function to save high scores and reset the game
 function saveHighScores() {
     let playerName = document.getElementById("playerName").value;
     if (playerName.trim() === "") {
@@ -98,8 +96,17 @@ function saveHighScores() {
     }
     localStorage.setItem("highScores", JSON.stringify(highScores));
     displayScores();
-    window.location.reload(); // Refresh the website
+
+    // Reset the game and display start screen
+    resetGame();
+    document.getElementById("playerName").value = ""; // Clear input field after saving
+    document.getElementById("endScreen").style.display = "none"; // Hide end screen
+    document.getElementById("scoreBoard").style.display = "block"; // Show scoreboard
+    document.getElementById("startScreen").style.display = "flex"; // Show start screen
+    document.getElementById("gameScreen").style.display = "none"; // Hide game screen
+    document.getElementById("endScreen").innerHTML = ""; // Clear end screen content
 }
+
 
 
 // Function to load high scores
@@ -112,9 +119,10 @@ function loadHighScores() {
 }
 
 window.onload = function() {
-    loadHighScores(); // Load scores from local storage
+    loadHighScores(); // Load scores from local storage or server when the page loads
     document.getElementById("startScreen").style.display = "block"; // Display start screen
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
+    document.getElementById("endScreen").style.display = "none"; // Hide end screen
     document.getElementById("scoreBoard").style.display = "block"; // Display high scores
     board = document.getElementById("board");
     board.height = boardHeight;
@@ -149,16 +157,7 @@ function update() {
     requestAnimationFrame(update);
     if (gameOver) {
         // Game over logic
-        document.getElementById("gameScreen").style.display = "none"; // Hide game screen
-        document.getElementById("endScreen").style.display = "block";
-        document.getElementById("scoresDisplay").style.display = "block"; // Show scores after game over
-        // Ask for player's name after game over
-        document.getElementById("endScreen").innerHTML = `
-            <h2>Game Over</h2>
-            <p>Your score: ${score}</p>
-            <input type="text" id="playerName" placeholder="Enter your name">
-            <button onclick="saveHighScores()">Save</button>
-        `;
+        displayEndScores(); // Display high scores
         return;
     }
 
@@ -213,18 +212,53 @@ function update() {
     context.font = "20px sans-serif";
     context.fillText(score, 10, 30);
 }
-function placePipes() {
-    let randomPipeY = Math.random() * (board.height - pipeHeight);
-    let pipe = {
-        x: board.width,
-        y: randomPipeY,
-        width: pipeWidth,
-        height: pipeHeight
-    };
-    pipeArray.push(pipe);
+
+function restartGame() {
+    document.getElementById("endScreen").style.display = "none";
+    resetGame();
+    startGame();
 }
 
+function placePipes() {
+    if (gameOver) {
+        return;
+    }
 
+    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+    let openingSpace = board.height / 4;
+
+    let topPipe = {
+        img: topPipeImg,
+        x: pipeX,
+        y: randomPipeY,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
+    }
+    pipeArray.push(topPipe);
+
+    let bottomPipe = {
+        img: bottomPipeImg,
+        x: pipeX,
+        y: randomPipeY + pipeHeight + openingSpace,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
+    }
+    pipeArray.push(bottomPipe);
+}
+
+// Function to display high scores at the end of the game
+function displayEndScores() {
+    loadHighScores(); // Reload scores in case they were updated during the game
+    document.getElementById("endScreen").style.display = "block"; // Display end screen
+    document.getElementById("gameScreen").style.display = "none"; // Hide game screen
+    document.getElementById("scoresDisplay").style.display = "block"; // Show high scores
+    // Display player's score
+    document.getElementById("finalScore").textContent = score;
+}
+
+// Event listener for spacebar key to make the bird jump
 function moveBird(event) {
     console.log("Key pressed: " + event.code);
     if (event.code === "Space") { // Only respond to spacebar key
@@ -234,11 +268,13 @@ function moveBird(event) {
     }
 }
 
+// Event listener for touch input to make the bird jump
 function moveBirdTouch(e) {
     e.preventDefault(); // Prevent default touch behavior (like scrolling)
     jump();
 }
 
+// Function to handle bird jumping
 function jump() {
     if (!gameOver) {
         velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
@@ -247,6 +283,7 @@ function jump() {
     }
 }
 
+// Function to detect collision between two objects
 function detectCollision(a, b) {
     return a.x < b.x + b.width &&
         a.x + a.width > b.x &&
