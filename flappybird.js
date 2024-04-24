@@ -213,6 +213,17 @@ function update() {
     context.font = "20px sans-serif";
     context.fillText(score, 10, 30);
 }
+function placePipes() {
+    let randomPipeY = Math.random() * (board.height - pipeHeight);
+    let pipe = {
+        x: board.width,
+        y: randomPipeY,
+        width: pipeWidth,
+        height: pipeHeight
+    };
+    pipeArray.push(pipe);
+}
+
 
 function moveBird(event) {
     console.log("Key pressed: " + event.code);
