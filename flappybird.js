@@ -97,6 +97,9 @@ function saveHighScores() {
     localStorage.setItem("highScores", JSON.stringify(highScores));
     displayScores();
 
+    // Clear end screen content
+    document.getElementById("endScreen").innerHTML = "";
+
     // Reset the game and display start screen
     resetGame();
     document.getElementById("playerName").value = ""; // Clear input field after saving
@@ -104,8 +107,8 @@ function saveHighScores() {
     document.getElementById("scoreBoard").style.display = "block"; // Show scoreboard
     document.getElementById("startScreen").style.display = "flex"; // Show start screen
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
-    document.getElementById("endScreen").innerHTML = ""; // Clear end screen content
 }
+
 
 
 
