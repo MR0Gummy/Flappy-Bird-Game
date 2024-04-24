@@ -95,8 +95,6 @@ function saveHighScores() {
         highScores.pop();
     }
 
-    console.log("Updated high scores:", highScores); // Log updated high scores
-
     localStorage.setItem("highScores", JSON.stringify(highScores));
     console.log("Saved high scores to localStorage.");
 
@@ -110,7 +108,13 @@ function saveHighScores() {
     document.getElementById("startScreen").style.display = "flex"; // Show start screen
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
     document.getElementById("endScreen").innerHTML = ""; // Clear end screen content
+
+    // Delay before refreshing the webpage
+    setTimeout(() => {
+        location.reload(); // Refresh the webpage after a delay
+    }, 1000); // Adjust the delay time as needed (in milliseconds)
 }
+
 
 
 
