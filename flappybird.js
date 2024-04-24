@@ -109,11 +109,14 @@ function saveHighScores() {
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
     document.getElementById("endScreen").innerHTML = ""; // Clear end screen content
 
+    console.log("Before delay...");
     // Delay before refreshing the webpage
     setTimeout(() => {
+        console.log("After delay. Refreshing webpage...");
         location.reload(); // Refresh the webpage after a delay
     }, 1000); // Adjust the delay time as needed (in milliseconds)
 }
+
 
 
 
