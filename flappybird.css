@@ -1,23 +1,59 @@
 body {
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
     background-color: black;
-    color:white;
-}
-
-
-#board {
-    /* background-color: skyblue; */
-    background-image: url("./flappybirdbg.png");
-    background-size: cover; /* Ensures the background image covers the entire canvas */
-}
-
-#endScreen {
     text-align: center;
+    color: white;
+}
+
+#startScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#startButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 #scoresDisplay {
-    list-style-type: none; /* Remove bullet points */
-    padding: 0; /* Remove default padding */
-    margin: 0 auto; /* Center horizontally */
+    list-style-type: none;
+    padding: 0;
+    margin: 0; /* Remove margin between "High Scores" and scores */
+}
+
+#gameScreen {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Center the game canvas */
+#board {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Center the scores */
+#scoresDisplay {
+    position: absolute;
+    top: 10px; /* Adjust positioning if needed */
+    left: 10px; /* Adjust positioning if needed */
+}
+
+#endScreen {
+    display: none;
+    text-align: center;
+}
+
+h3 {
+    display: none; /* Hide "High Scores" text during gameplay */
 }

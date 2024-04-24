@@ -1,7 +1,6 @@
 // Constants for different device types
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-let playerName;
 let highScores = [];
 
 //board
@@ -41,12 +40,20 @@ let gravity = 0.4;
 
 let gameOver = false;
 let score = 0;
+let playerName = ""; // Store player's name
 
 // Function to start the game
 function startGame() {
-    playerName = document.getElementById("playerName").value;
+    console.log("startGame() called");
+    playerName = document.getElementById("playerName").value.trim(); // Get player's name
+    if (playerName === "") {
+        alert("Please enter your name.");
+        return; // Don't start the game if the player's name is empty
+    }
     document.getElementById("startScreen").style.display = "none";
-    document.getElementById("board").style.display = "block";
+    document.getElementById("gameScreen").style.display = "block";
+    document.getElementById("scoreBoard").style.display = "none"; // Hide high scores
+    document.getElementById("board").style.backgroundImage = "url('flappybirdbg.png')"; // Show game background
     document.removeEventListener("keydown", moveBird); // Remove existing event listeners
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
     document.addEventListener("keydown", moveBird);
@@ -58,6 +65,7 @@ function startGame() {
 // Function to display scores
 function displayScores() {
     let scoresDisplay = document.getElementById("scoresDisplay");
+    scoresDisplay.style.display = "block"; // Show scores
     scoresDisplay.innerHTML = "";
     highScores.forEach((entry, index) => {
         let li = document.createElement("li");
@@ -74,10 +82,18 @@ function resetGame() {
     gameOver = false;
     velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
     requestAnimationFrame(update);
+    document.removeEventListener("keydown", moveBird);
+    document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
+    document.addEventListener("keydown", moveBird);
+    document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
 }
 
 // Function to save high scores
 function saveHighScores() {
+    if (playerName === "") {
+        alert("Please enter your name before saving the score.");
+        return; // Don't save the score if the player's name is empty
+    }
     highScores.push({ name: playerName, score: score });
     highScores.sort((a, b) => b.score - a.score);
     if (highScores.length > 10) {
@@ -98,92 +114,118 @@ function loadHighScores() {
 
 window.onload = function() {
     loadHighScores(); // Load scores from local storage
-    if (!isMobile) {
-        document.getElementById("scoreBoard").style.display = "block"; // Display scores on computer
-    }
+    document.getElementById("startScreen").style.display = "block"; // Display start screen
+    document.getElementById("gameScreen").style.display = "none"; // Hide game screen
+    document.getElementById("endScreen").style.display = "none"; // Hide end screen
+    document.getElementById("scoreBoard").style.display = "block"; // Display high scores
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d");
 
-    //load images
+    // Load bird image
     birdImg = new Image();
     birdImg.onload = function() {
         context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
     birdImg.src = "./flappybird.png";
 
+    // Load top pipe image
     topPipeImg = new Image();
-    topPipeImg.onload = function() {
-    }
     topPipeImg.src = "./toppipe.png";
 
+    // Load bottom pipe image
     bottomPipeImg = new Image();
-    bottomPipeImg.onload = function() {
-    }
     bottomPipeImg.src = "./bottompipe.png";
 
-    // Add event listener for "Enter" key to start game
-    document.getElementById("playerName").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            startGame();
-        }
-    });
+    // Add event listener for "Start Game" button click
+    document.getElementById("startButton").addEventListener("click", startGame);
+    document.addEventListener("keydown", moveBird);
 }
 
+let pipeSpawnCounter = 0; // Counter to keep track of pipe spawning
+let pipeSpawnDelay = 100; // Delay between pipe spawns (adjust as needed)
+
 function update() {
+    console.log("update function called");
     requestAnimationFrame(update);
     if (gameOver) {
+        // Game over logic
+        document.getElementById("endScreen").style.display = "block";
+        document.getElementById("gameScreen").style.display = "none"; // Hide game screen
+        document.getElementById("scoresDisplay").style.display = "block"; // Show scores after game over
+        // Ask for player's name after game over
+        document.getElementById("endScreen").innerHTML = `
+            <h2>Game Over</h2>
+            <p>Your score: ${score}</p>
+            <button onclick="saveHighScores()">Save</button>
+            <button onclick="restartGame()">Restart</button>
+        `;
         return;
     }
-    context.clearRect(0, 0, board.width, board.height);
 
     // Update bird position
     velocityY += gravity;
-    bird.y = Math.max(bird.y + velocityY, 0);
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+    bird.y += velocityY;
 
-    // Check if bird goes out of bounds
-    if (bird.y > board.height || bird.y + bird.height < 0) {
-        gameOver = true;
-        saveHighScores();
-        displayScores();
-        document.getElementById("endScreen").style.display = "block";
-        return; // Exit the update loop
-    }
-
-    //pipes
+    // Update pipe positions
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
-        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
-        if (!pipe.passed && bird.x > pipe.x + pipe.width) {
+        // Check for collision with pipes
+        if (detectCollision(bird, pipe)) {
+            gameOver = true;
+            break; // Exit loop early since the game is over
+        }
+
+        // Check if bird passes the pipe to increment score
+        if (bird.x > pipe.x + pipe.width && !pipe.passed) {
             score += 0.5;
             pipe.passed = true;
         }
-
-        if (detectCollision(bird, pipe)) {
-            gameOver = true;
-            saveHighScores();
-            displayScores();
-            document.getElementById("endScreen").style.display = "block";
-        }
     }
 
-    //clear pipes
-    while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
-        pipeArray.shift(); //removes first element from the array
+    // Check for out of bounds
+    if (bird.y > board.height || bird.y + bird.height < 0) {
+        gameOver = true;
     }
 
-    //score
+    // Increment pipe spawn counter
+    pipeSpawnCounter++;
+
+    // Spawn new pipes if counter reaches delay
+    if (pipeSpawnCounter >= pipeSpawnDelay) {
+        placePipes();
+        pipeSpawnCounter = 0; // Reset the counter
+    }
+
+    // Drawing logic
+    context.clearRect(0, 0, board.width, board.height);
+    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+
+    // Drawing pipes
+    for (let i = 0; i < pipeArray.length; i++) {
+        let pipe = pipeArray[i];
+        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+    }
+
+    // Drawing score
     context.fillStyle = "white";
-    context.font = "45px sans-serif";
-    context.fillText(score, 5, 45);
+    context.font = "20px sans-serif";
+    context.fillText(score, 10, 30);
+}
 
-    if (gameOver) {
-        context.fillText("GAME OVER", 5, 90);
-    }
+function restartGame() {
+    document.getElementById("endScreen").style.display = "none";
+    resetGame();
+    startGame();
+    
+    // Reattach event listeners
+    document.removeEventListener("keydown", moveBird);
+    document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
+    document.addEventListener("keydown", moveBird);
+    document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
 }
 
 function placePipes() {
@@ -215,7 +257,9 @@ function placePipes() {
     pipeArray.push(bottomPipe);
 }
 
+// Event listener for spacebar key to make the bird jump
 function moveBird(event) {
+    console.log("Key pressed: " + event.code);
     if (event.code === "Space") { // Only respond to spacebar key
         if (!gameOver) {
             jump();
@@ -223,19 +267,22 @@ function moveBird(event) {
     }
 }
 
+// Event listener for touch input to make the bird jump
 function moveBirdTouch(e) {
     e.preventDefault(); // Prevent default touch behavior (like scrolling)
     jump();
 }
 
+// Function to handle bird jumping
 function jump() {
     if (!gameOver) {
         velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
     } else {
-        resetGame();
+        resetGame(); // Reset the game after game over
     }
 }
 
+// Function to detect collision between two objects
 function detectCollision(a, b) {
     return a.x < b.x + b.width &&
         a.x + a.width > b.x &&
