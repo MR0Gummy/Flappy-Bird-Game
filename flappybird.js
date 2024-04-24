@@ -118,11 +118,6 @@ function saveHighScores() {
 
 
 
-
-
-
-
-
 // Function to load high scores
 function loadHighScores() {
     let storedScores = localStorage.getItem("highScores");
@@ -138,6 +133,9 @@ window.onload = function() {
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
     document.getElementById("endScreen").style.display = "none"; // Hide end screen
     document.getElementById("scoreBoard").style.display = "block"; // Display high scores
+    // Add event listener for the save button
+    document.getElementById("saveButton").addEventListener("click", saveHighScores);
+
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
