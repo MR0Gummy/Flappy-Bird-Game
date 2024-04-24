@@ -104,9 +104,8 @@ function saveHighScores() {
     document.getElementById("scoreBoard").style.display = "block"; // Show scoreboard
     document.getElementById("startScreen").style.display = "flex"; // Show start screen
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
+    document.getElementById("endScreen").innerHTML = ""; // Clear end screen content
 }
-
-
 
 
 // Function to load high scores
