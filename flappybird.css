@@ -25,6 +25,7 @@ body {
     list-style-type: none;
     padding: 0;
     margin: 0; /* Remove margin between "High Scores" and scores */
+    text-align: center;
 }
 
 #gameScreen {
