@@ -10,15 +10,22 @@
     <div id="startScreen">
         <h1>Welcome to Flappy Bird</h1>
         <input type="text" id="playerName" placeholder="Enter your name">
-        <button id="startButton" onclick="startGame()">Start Game</button>
-        <div id="scoreBoard">
-            <h3>High Scores</h3>
-            <ul id="scoresDisplay"></ul>
-        </div>
+        <button id="startButton">Start Game</button>
     </div>
 
     <div id="gameScreen" style="display: none;">
         <canvas id="board"></canvas>
+    </div>
+
+    <div id="endScreen" style="display: none;">
+        <h2>Game Over</h2>
+        <p>Your score: <span id="finalScore">0</span></p>
+        <button onclick="saveHighScores()">Save</button>
+    </div>
+
+    <div id="scoreBoard" style="display: none;">
+        <h3>High Scores</h3>
+        <ul id="scoresDisplay"></ul>
     </div>
 
     <script src="flappybird.js"></script>
