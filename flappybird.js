@@ -94,11 +94,13 @@ function saveHighScores() {
     if (highScores.length > 10) {
         highScores.pop();
     }
-    localStorage.setItem("highScores", JSON.stringify(highScores));
-    displayScores();
 
-    // Clear end screen content
-    document.getElementById("endScreen").innerHTML = "";
+    console.log("Updated high scores:", highScores); // Log updated high scores
+
+    localStorage.setItem("highScores", JSON.stringify(highScores));
+    console.log("Saved high scores to localStorage.");
+
+    displayScores();
 
     // Reset the game and display start screen
     resetGame();
@@ -107,7 +109,9 @@ function saveHighScores() {
     document.getElementById("scoreBoard").style.display = "block"; // Show scoreboard
     document.getElementById("startScreen").style.display = "flex"; // Show start screen
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
+    document.getElementById("endScreen").innerHTML = ""; // Clear end screen content
 }
+
 
 
 
