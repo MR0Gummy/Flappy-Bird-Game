@@ -98,7 +98,7 @@ function saveHighScores() {
     displayScores();
     document.getElementById("playerName").value = ""; // Clear input field after saving
     document.getElementById("endScreen").style.display = "none"; // Hide end screen
-    document.getElementById("startScreen").style.display = "block"; // Show start screen
+    document.getElementById("startScreen").style.display = "flex"; // Show start screen
 }
 
 
