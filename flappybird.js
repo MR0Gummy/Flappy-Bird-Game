@@ -83,7 +83,7 @@ function resetGame() {
     displayScores(); // Display high scores at the start of the game
 }
 
-// Function to save high scores
+// Function to save high scores and reset the game
 function saveHighScores() {
     let playerName = document.getElementById("playerName").value;
     if (playerName.trim() === "") {
@@ -96,11 +96,13 @@ function saveHighScores() {
     }
     localStorage.setItem("highScores", JSON.stringify(highScores));
     displayScores();
+    resetGame(); // Reset the game
     document.getElementById("playerName").value = ""; // Clear input field after saving
     document.getElementById("endScreen").style.display = "none"; // Hide end screen
     document.getElementById("startScreen").style.display = "flex"; // Show start screen
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
 }
+
 
 
 // Function to load high scores
