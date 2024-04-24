@@ -57,3 +57,13 @@ body {
 h3 {
     display: none; /* Hide "High Scores" text during gameplay */
 }
+/* Add hover effect to buttons */
+button {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2ecc71; /* Change button color on hover */
+}
+ 

@@ -90,27 +90,50 @@ function resetGame() {
 
 // Function to save high scores
 function saveHighScores() {
-    if (playerName === "") {
-        alert("Please enter your name before saving the score.");
-        return; // Don't save the score if the player's name is empty
+    let playerName = document.getElementById("playerName").value;
+    if (playerName.trim() === "") {
+        playerName = "Anonymous"; // Set default name if no name is provided
     }
-    highScores.push({ name: playerName, score: score });
-    highScores.sort((a, b) => b.score - a.score);
-    if (highScores.length > 10) {
-        highScores.pop();
-    }
-    localStorage.setItem("highScores", JSON.stringify(highScores));
-    displayScores();
+    let data = JSON.stringify({ name: playerName, score: score });
+    fetch('/saveScores', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: data
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(() => {
+        displayScores(); // Update scores after saving
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 // Function to load high scores
 function loadHighScores() {
-    let storedScores = localStorage.getItem("highScores");
-    if (storedScores) {
-        highScores = JSON.parse(storedScores);
-    }
-    displayScores();
+    fetch('/loadScores')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        highScores = JSON.parse(data);
+        displayScores();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
+
 
 window.onload = function() {
     loadHighScores(); // Load scores from local storage
