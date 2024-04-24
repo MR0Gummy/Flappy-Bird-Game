@@ -12,12 +12,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 20%;
 }
 
 #startButton {
-    padding: 10px 20px;
-    font-size: 18px;
+    font-size: 18;
     cursor: pointer;
 }
 
@@ -39,10 +38,9 @@ body {
 /* Center the scores */
 #scoresDisplay {
     list-style-type: none;
-    padding: 0;
-    margin: 0; /* Remove margin between "High Scores" and scores */
     text-align: center;
 }
+
 
 #endScreen {
     display: none;
