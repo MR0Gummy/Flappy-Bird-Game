@@ -164,66 +164,77 @@ window.onload = function() {
 let pipeSpawnCounter = 0; // Counter to keep track of pipe spawning
 let pipeSpawnDelay = 100; // Delay between pipe spawns (adjust as needed)
 
-function update() {
-    console.log("update function called");
-    requestAnimationFrame(update);
-    if (gameOver) {
-        // Game over logic
-        displayEndScores(); // Display high scores
-        return;
-    }
+let lastFrameTime = 0;
+const targetFrameRate = 60; // Target frame rate (60 frames per second)
 
-    // Update bird position
-    velocityY += gravity;
-    bird.y += velocityY;
+function update(timestamp) {
+    const deltaTime = timestamp - lastFrameTime;
+    const frameInterval = 1000 / targetFrameRate;
 
-    // Update pipe positions
-    for (let i = 0; i < pipeArray.length; i++) {
-        let pipe = pipeArray[i];
-        pipe.x += velocityX;
+    if (deltaTime > frameInterval) {
+        lastFrameTime = timestamp - (deltaTime % frameInterval);
 
-        // Check for collision with pipes
-        if (detectCollision(bird, pipe)) {
+        if (gameOver) {
+            // Game over logic
+            displayEndScores(); // Display high scores
+            return;
+        }
+
+        // Update bird position
+        velocityY += gravity;
+        bird.y += velocityY;
+
+        // Update pipe positions
+        for (let i = 0; i < pipeArray.length; i++) {
+            let pipe = pipeArray[i];
+            pipe.x += velocityX;
+
+            // Check for collision with pipes
+            if (detectCollision(bird, pipe)) {
+                gameOver = true;
+                break; // Exit loop early since the game is over
+            }
+
+            // Check if bird passes the pipe to increment score
+            if (bird.x > pipe.x + pipe.width && !pipe.passed) {
+                score += 0.5;
+                pipe.passed = true;
+            }
+        }
+
+        // Check for out of bounds
+        if (bird.y > board.height || bird.y + bird.height < 0) {
             gameOver = true;
-            break; // Exit loop early since the game is over
         }
 
-        // Check if bird passes the pipe to increment score
-        if (bird.x > pipe.x + pipe.width && !pipe.passed) {
-            score += 0.5;
-            pipe.passed = true;
+        // Increment pipe spawn counter
+        pipeSpawnCounter++;
+
+        // Spawn new pipes if counter reaches delay
+        if (pipeSpawnCounter >= pipeSpawnDelay) {
+            placePipes();
+            pipeSpawnCounter = 0; // Reset the counter
         }
+
+        // Drawing logic
+        context.clearRect(0, 0, board.width, board.height);
+        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+
+        // Drawing pipes
+        for (let i = 0; i < pipeArray.length; i++) {
+            let pipe = pipeArray[i];
+            context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+        }
+
+        // Drawing score
+        context.fillStyle = "white";
+        context.font = "20px sans-serif";
+        context.fillText(score, 10, 30);
     }
 
-    // Check for out of bounds
-    if (bird.y > board.height || bird.y + bird.height < 0) {
-        gameOver = true;
-    }
-
-    // Increment pipe spawn counter
-    pipeSpawnCounter++;
-
-    // Spawn new pipes if counter reaches delay
-    if (pipeSpawnCounter >= pipeSpawnDelay) {
-        placePipes();
-        pipeSpawnCounter = 0; // Reset the counter
-    }
-
-    // Drawing logic
-    context.clearRect(0, 0, board.width, board.height);
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-
-    // Drawing pipes
-    for (let i = 0; i < pipeArray.length; i++) {
-        let pipe = pipeArray[i];
-        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-    }
-
-    // Drawing score
-    context.fillStyle = "white";
-    context.font = "20px sans-serif";
-    context.fillText(score, 10, 30);
+    requestAnimationFrame(update);
 }
+
 
 function restartGame() {
     document.getElementById("endScreen").style.display = "none";
@@ -279,6 +290,20 @@ function moveBird(event) {
         }
     }
 }
+
+let lastTouchTime = 0;
+const touchCooldown = 300; // Cooldown period between touch events in milliseconds
+
+function moveBirdTouch(e) {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+
+    const currentTime = Date.now();
+    if (currentTime - lastTouchTime > touchCooldown) {
+        jump();
+        lastTouchTime = currentTime;
+    }
+}
+
 
 // Event listener for touch input to make the bird jump
 function moveBirdTouch(e) {
