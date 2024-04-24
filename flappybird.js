@@ -119,7 +119,7 @@ function loadHighScores() {
 }
 
 window.onload = function() {
-    loadHighScores(); // Load scores from local storage
+    loadHighScores(); // Load scores from local storage or server when the page loads
     document.getElementById("startScreen").style.display = "block"; // Display start screen
     document.getElementById("gameScreen").style.display = "none"; // Hide game screen
     document.getElementById("endScreen").style.display = "none"; // Hide end screen
@@ -147,15 +147,7 @@ window.onload = function() {
     // Add event listener for "Start Game" button click
     document.getElementById("startButton").addEventListener("click", startGame);
     document.addEventListener("keydown", moveBird);
-
-    // Add event listener for "Save" button click
-    document.getElementById("saveButton").addEventListener("click", function() {
-        // Save scores here (e.g., send data to server)
-        // Reload the page after saving
-        location.reload();
-    });
 }
-
 
 let pipeSpawnCounter = 0; // Counter to keep track of pipe spawning
 let pipeSpawnDelay = 100; // Delay between pipe spawns (adjust as needed)
