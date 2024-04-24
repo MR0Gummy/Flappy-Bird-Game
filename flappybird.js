@@ -101,9 +101,6 @@ function saveHighScores() {
     document.getElementById("startScreen").style.display = "flex"; // Show start screen
 }
 
-
-
-
 // Function to load high scores
 function loadHighScores() {
     let storedScores = localStorage.getItem("highScores");
