@@ -71,19 +71,22 @@ function displayScores() {
     });
 }
 
-// Function to reset the game
-function resetGame() {
-    bird.y = birdY;
-    pipeArray = [];
-    score = 0;
-    gameOver = false;
-    velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
-    requestAnimationFrame(update);
-    document.removeEventListener("keydown", moveBird);
-    document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
-    document.addEventListener("keydown", moveBird);
-    document.getElementById("board").addEventListener("touchstart", moveBirdTouch);
+// Function to save high scores
+function saveHighScores() {
+    let playerName = document.getElementById("playerName").value;
+    if (playerName.trim() === "") {
+        playerName = "Anonymous"; // Set default name if no name is provided
+    }
+    highScores.push({ name: playerName, score: score });
+    highScores.sort((a, b) => b.score - a.score);
+    if (highScores.length > 10) {
+        highScores.pop();
+    }
+    localStorage.setItem("highScores", JSON.stringify(highScores));
+    displayScores();
+    window.location.reload(); // Refresh the website
 }
+
 
 // Function to save high scores
 function saveHighScores() {
