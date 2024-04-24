@@ -317,7 +317,7 @@ function moveBirdTouch(e) {
 // Function to handle bird jumping
 function jump() {
     if (!gameOver) {
-        velocityY = isMobile ? -5 : -6; // Adjusted jump velocity for mobile devices
+        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
     } else {
         resetGame(); // Reset the game after game over
     }
