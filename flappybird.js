@@ -190,7 +190,7 @@ function update(timestamp) {
 
 // Start the game loop
 requestAnimationFrame(update);
-
+ 
 
 function update() {
     console.log("update function called");
