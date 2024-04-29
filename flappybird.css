@@ -16,7 +16,7 @@ body {
 }
 
 #startButton {
-    font-size: 18;
+    font-size: 18px; /* Added "px" for font size */
     cursor: pointer;
 }
 
@@ -41,7 +41,6 @@ body {
     text-align: center;
 }
 
-
 #endScreen {
     display: none;
     text-align: center;
@@ -50,6 +49,7 @@ body {
 h3 {
     display: none; /* Hide "High Scores" text during gameplay */
 }
+
 /* Add hover effect to buttons */
 button {
     cursor: pointer;
@@ -59,4 +59,3 @@ button {
 button:hover {
     background-color: #2ecc71; /* Change button color on hover */
 }
- 

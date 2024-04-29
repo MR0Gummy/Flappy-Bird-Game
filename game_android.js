@@ -1,12 +1,12 @@
 // Constants for different device types
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const isMobile = true;
 
 let highScores = [];
 
 //board
 let board;
-let boardWidth = isMobile ? window.innerWidth : 360;
-let boardHeight = isMobile ? window.innerHeight : 640;
+let boardWidth = window.innerWidth;
+let boardHeight = window.innerHeight;
 let context;
 
 //bird
@@ -35,7 +35,7 @@ let bottomPipeImg;
 
 //physics
 let velocityX = -2; //pipes moving left speed
-let velocityY = isMobile ? -4 : 0; // Adjusted jump velocity for mobile devices
+let velocityY = -4; // Adjusted jump velocity for mobile devices
 let gravity = 0.4;
 
 let gameOver = false;
@@ -74,7 +74,7 @@ function resetGame() {
     pipeArray = [];
     score = 0;
     gameOver = false;
-    velocityY = isMobile ? -4 : 0; // Reset jump velocity for mobile devices
+    velocityY = -4; // Reset jump velocity for mobile devices
     requestAnimationFrame(update);
     document.removeEventListener("keydown", moveBird);
     document.getElementById("board").removeEventListener("touchstart", moveBirdTouch);
@@ -115,8 +115,6 @@ function saveHighScores() {
         location.reload(); // Refresh the webpage after a delay
     }, 1000); // Adjust the delay time as needed (in milliseconds)
 }
-
-
 
 // Function to load high scores
 function loadHighScores() {
@@ -163,34 +161,6 @@ window.onload = function() {
 
 let pipeSpawnCounter = 0; // Counter to keep track of pipe spawning
 let pipeSpawnDelay = 100; // Delay between pipe spawns (adjust as needed)
-let lastFrameTime = 0;
-const targetFrameRate = 60; // Target frame rate (60 frames per second)
-
-function update(timestamp) {
-    const deltaTime = timestamp - lastFrameTime;
-    const frameInterval = 1000 / targetFrameRate;
-
-    if (deltaTime > frameInterval) {
-        lastFrameTime = timestamp - (deltaTime % frameInterval);
-
-        // Your game logic here
-        // Update bird position, pipe positions, etc.
-
-        // Render the game
-        render();
-
-        // Check for game over, collision detection, etc.
-        if (!gameOver) {
-            requestAnimationFrame(update);
-        }
-    } else {
-        requestAnimationFrame(update);
-    }
-}
-
-// Start the game loop
-requestAnimationFrame(update);
- 
 
 function update() {
     console.log("update function called");
@@ -317,7 +287,7 @@ function moveBirdTouch(e) {
 // Function to handle bird jumping
 function jump() {
     if (!gameOver) {
-        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
+        velocityY = -6; // Adjusted jump velocity for mobile devices
     } else {
         resetGame(); // Reset the game after game over
     }

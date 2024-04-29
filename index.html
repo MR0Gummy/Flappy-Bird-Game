@@ -7,27 +7,24 @@
     <link rel="stylesheet" href="flappybird.css">
 </head>
 <body>
-    <div id="startScreen">
-        <h1>Welcome to Flappy Bird</h1>
-        <input type="text" id="playerName" placeholder="Enter your name">
-        <button id="startButton">Start Game</button>
+    <div id="content">
+        <!-- Content for your game will be dynamically loaded here -->
     </div>
+    <script>
+        // Function to detect the device type and load the appropriate game script
+        function loadGameScript() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const scriptSrc = isMobile ? 'game_mobile.js' : 'game_desktop.js';
 
-    <div id="gameScreen" style="display: none;">
-        <canvas id="board"></canvas>
-    </div>
+            const scriptElement = document.createElement('script');
+            scriptElement.src = scriptSrc;
+            scriptElement.async = false; // Ensure the script is loaded synchronously
 
-    <div id="endScreen" style="display: none;">
-        <h2>Game Over</h2>
-        <p>Your score: <span id="finalScore">0</span></p>
-        <button id="saveButton">Save</button>
-    </div>
+            document.getElementById('content').appendChild(scriptElement);
+        }
 
-    <div id="scoreBoard">
-        <h3>High Scores</h3>
-        <ul id="scoresDisplay"></ul>
-    </div>
-
-    <script src="flappybird.js"></script>
+        // Call the function to load the appropriate game script
+        loadGameScript();
+    </script>
 </body>
 </html>
