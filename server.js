@@ -13,7 +13,7 @@ const server = http.createServer((req, res) => {
             body += chunk.toString();
         });
         req.on('end', () => {
-            fs.writeFileSync('scores.txt', body);
+            fs.writeFileSync('./scores.txt', body);
             res.end();
         });
     } else if (pathname === '/loadScores') {

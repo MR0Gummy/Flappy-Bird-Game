@@ -1,3 +1,4 @@
+
 // Constants for different device types
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -36,10 +37,10 @@ let bottomPipeImg;
 //physics
 let velocityX = -2; //pipes moving left speed
 let velocityY = isMobile ? -4 : 0; // Adjusted jump velocity for mobile devices
-let gravity = 0.4;
+let gravity = 0.08;
 
-//misc
 let gameOver = false;
+let game_started = false
 let score = 0;
 
 //jump
@@ -48,6 +49,7 @@ let jump2 = isMobile ? jump_value / 3 * 2  : jump_value;
 
 // Function to start the game
 function startGame() {
+    game_started = true;
     console.log("startGame() called");
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "block";
@@ -172,7 +174,7 @@ let lastFrameTime = 0;
 const targetFrameRate = 60; // Target frame rate (60 frames per second)
 
 function update(timestamp) {
-    timestamp = (timestamp / timestamp) + 1
+    timestamp = timestamp / timestamp * 0.00001
     const deltaTime = timestamp - lastFrameTime;
     const frameInterval = 1000 / targetFrameRate;
 
@@ -199,7 +201,6 @@ requestAnimationFrame(update);
  
 
 function update() {
-    console.log("update function called");
     requestAnimationFrame(update);
     if (gameOver) {
         // Game over logic
@@ -228,11 +229,11 @@ function update() {
             pipe.passed = true;
         }
     }
-
-    // Check for out of bounds
-    if (bird.y > board.height || bird.y + bird.height < 0) {
-        gameOver = true;
-    }
+    if (game_started = true)
+        // Check for out of bounds
+        if ( bird.y > board.height || bird.y + bird.height < 0) {
+            gameOver = true;
+        }
 
     // Increment pipe spawn counter
     pipeSpawnCounter++;
@@ -322,8 +323,9 @@ function moveBirdTouch(e) {
 
 // Function to handle bird jumping
 function jump() {
+    console.log('jumping')
     if (!gameOver) {
-        velocityY = isMobile ? -4 : -6; // Adjusted jump velocity for mobile devices
+        velocityY = isMobile ? 2.5 / 3 * 2  : 2.5;; // Adjusted jump velocity for mobile devices
     } else {
         resetGame(); // Reset the game after game over
     }
